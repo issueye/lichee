@@ -8,7 +8,7 @@
 
 演示视频：
 
-<video src="https://github.com/issueye/lichee/blob/main/resources/1679640098610.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video>
+<video src="https://user-images.githubusercontent.com/28434476/227457973-d7d641df-7e8d-41e1-aff6-700985282d0f.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video>
 
 
 
