@@ -163,3 +163,5 @@
     - `rollback`
     - `exec`
     - `query`
+- `os/exec`
+  - `command`
