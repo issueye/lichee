@@ -8,7 +8,7 @@
 
 演示视频：
 
-<video src="https://user-images.githubusercontent.com/28434476/227457973-d7d641df-7e8d-41e1-aff6-700985282d0f.mp4" width="100%" height="100%" controls="controls"></video>
+<img src="E:\works\golang\src\issueye\lichee\resources\lichee.gif" style="zoom:80%;" />
 
 
 
