@@ -8,7 +8,7 @@
 
 演示视频：
 
-<img src="E:\works\golang\src\issueye\lichee\resources\lichee.gif" style="zoom:80%;" />
+<img src="resources/lichee.gif" style="zoom:80%;" />
 
 
 
