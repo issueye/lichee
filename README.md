@@ -1,4 +1,4 @@
-# <img src="E:\works\golang\src\issueye\lichee\resources\lichee.png" style="zoom: 30%;" />
+# <img src="resources/lichee.png" style="zoom: 30%;" />
 
 # LICHEE ：一个运行 `javascript` 脚本的小工具
 
@@ -8,7 +8,7 @@
 
 演示视频：
 
-<video src="./resources/1679640098610.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video>
+<video src="resources/1679640098610.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video>
 
 
 
