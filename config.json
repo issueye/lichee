@@ -1,0 +1,29 @@
+{
+  "local_host": "192.168.227.120",
+  "local_port": 10066,
+  "log": {
+    "path": "go-plugins",
+    "max_size": 10,
+    "max_age": 10,
+    "max_backups": 10,
+    "compress": true,
+    "level": -1
+  },
+  "db": {
+    "user": "sa",
+    "password": "123qwe,.",
+    "host": "192.168.200.66/gy",
+    "database": "YX_PDJH_TEST",
+    "port": 1433,
+    "log_mode": true
+  },
+  "job": [
+    {
+      "name": "测试定时任务",
+      "id": 1,
+      "expr": "0/5 * * * * ?",
+      "benable": true,
+      "path": "PAT-INFO-PUSH.js"
+    }
+  ]
+}
