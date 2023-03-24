@@ -5,6 +5,6 @@ set GOOS=linux
 go mod tidy
 go mod vendor
 
-go build -ldflags "-w -s" -o go-plugins main.go
+go build -ldflags "-w -s" -o lichee main.go
 
-upx go-plugins
+upx lichee

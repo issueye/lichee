@@ -50,7 +50,7 @@ func InitHttpServer() {
 }
 
 func ShowInfo() {
-	bannerStr := `{{ .Title "GO-PLUGINS" "" 4 }}`
+	bannerStr := `{{ .Title "lichee" "" 4 }}`
 	banner.InitString(colorable.NewColorableStdout(), true, true, bannerStr)
 
 	info := `
@@ -58,9 +58,15 @@ func ShowInfo() {
 	运行　平台: %s
 	平台　架构: %s
 	处理器数量: %d
-	程序　版本: V0.1.0`
-	fmt.Printf(info,
-		runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.NumCPU())
+	程序　版本: V0.1.0
+	运行端口号：%d`
+	fmt.Printf(
+		info,
+		runtime.Version(),
+		runtime.GOOS,
+		runtime.GOARCH,
+		runtime.NumCPU(),
+		global.LocalCfg.LocalPort)
 
 	fmt.Println("")
 	fmt.Println("")

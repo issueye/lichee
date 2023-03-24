@@ -4,6 +4,6 @@ set GOOS=windows
 
 go mod vendor
 
-go build -ldflags "-w -s" -o go-plugins.exe main.go
+go build -ldflags "-w -s" -o lichee.exe main.go
 
-upx go-plugins.exe
+upx lichee.exe

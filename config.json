@@ -1,5 +1,4 @@
 {
-  "local_host": "192.168.227.120",
   "local_port": 10066,
   "log": {
     "path": "go-plugins",
@@ -9,21 +8,13 @@
     "compress": true,
     "level": -1
   },
-  "db": {
-    "user": "sa",
-    "password": "123123123",
-    "host": "127.0.0.1",
-    "database": "test",
-    "port": 1433,
-    "log_mode": true
-  },
   "job": [
     {
       "name": "测试定时任务",
       "id": 1,
       "expr": "0/5 * * * * ?",
       "benable": true,
-      "path": "PAT-INFO-PUSH.js"
+      "path": "test.js"
     }
   ]
 }

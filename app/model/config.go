@@ -1,7 +1,6 @@
 package model
 
 type Config struct {
-	LocalHost string       `json:"local_host"` // 本地IP地址
 	LocalPort int64        `json:"local_port"` // 本地端口号
 	Log       *LogConfig   `json:"log"`        // 日志
 	Db        *DbConfig    `json:"db"`         // 数据库

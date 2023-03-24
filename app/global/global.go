@@ -21,4 +21,6 @@ var (
 	JSPlugin   *core.Core         // 插件
 	LocalCfg   *model.Config      // 本地配置信息
 	ConfigPath string             // 配置文件路径
+
+	IsHaveDb bool // 是否有数据库
 )

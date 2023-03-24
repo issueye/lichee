@@ -11,9 +11,13 @@ import (
 // 初始化插件对象
 func InitPlugins() {
 	global.JSPlugin = global.GetInitCore()
-	localDB, err := global.LocalDb.DB()
-	if err != nil {
-		panic(fmt.Errorf("获取数据库连接失败，失败原因：%s", err.Error()))
+
+	// 如果有数据库则添加数据库连接对象
+	if global.IsHaveDb {
+		localDB, err := global.LocalDb.DB()
+		if err != nil {
+			panic(fmt.Errorf("获取数据库连接失败，失败原因：%s", err.Error()))
+		}
+		pDB.NewLocalDB(localDB)
 	}
-	pDB.NewLocalDB(localDB)
 }
