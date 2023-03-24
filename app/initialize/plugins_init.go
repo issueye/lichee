@@ -13,7 +13,7 @@ func InitPlugins() {
 	global.JSPlugin = global.GetInitCore()
 
 	// 如果有数据库则添加数据库连接对象
-	if global.IsHaveDb {
+	if global.LocalCfg.UseDB {
 		localDB, err := global.LocalDb.DB()
 		if err != nil {
 			panic(fmt.Errorf("获取数据库连接失败，失败原因：%s", err.Error()))

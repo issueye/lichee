@@ -6,15 +6,7 @@ import (
 )
 
 func InitDB() {
-	d := global.LocalCfg.Db
-	if d == nil {
-		return
+	if global.LocalCfg.UseDB {
+		global.LocalDb = db.InitSqlServer(global.LocalCfg.Db, global.Log)
 	}
-
-	if d.Database == "" || d.Host == "" || d.Password == "" || d.Username == "" {
-		return
-	}
-
-	global.LocalDb = db.InitSqlServer(global.LocalCfg.Db, global.Log)
-	global.IsHaveDb = true
 }

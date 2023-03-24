@@ -19,6 +19,7 @@
 ```json
 {
   "local_port": 10066,
+  "use_db": false,
   "log": {
     "path": "/lichee",
     "max_size": 10,
@@ -50,6 +51,7 @@
 
 
 - `local_port` 提供服务的端口号
+- `use_db` 是否使用数据库
 - `log` 日志配置
   - `path` 日志输出路径
   - `max_size` 一个文件的最大大小

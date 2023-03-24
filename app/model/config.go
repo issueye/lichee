@@ -2,6 +2,7 @@ package model
 
 type Config struct {
 	LocalPort int64        `json:"local_port"` // 本地端口号
+	UseDB     bool         `json:"use_db"`     // 是否使用数据库
 	Log       *LogConfig   `json:"log"`        // 日志
 	Db        *DbConfig    `json:"db"`         // 数据库
 	Job       []*JobConfig `json:"job"`        // 定时任务
