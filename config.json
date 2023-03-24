@@ -11,9 +11,9 @@
   },
   "db": {
     "user": "sa",
-    "password": "123qwe,.",
-    "host": "192.168.200.66/gy",
-    "database": "YX_PDJH_TEST",
+    "password": "123123123",
+    "host": "127.0.0.1",
+    "database": "test",
     "port": 1433,
     "log_mode": true
   },
