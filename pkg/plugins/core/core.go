@@ -41,8 +41,6 @@ type Core struct {
 	proMap map[string]*js.Program
 	// 日志对象
 	logger *zap.Logger
-	// 停止文件夹监听
-	stopChan chan struct{}
 	// 锁
 	lock *sync.Mutex
 }
@@ -53,7 +51,6 @@ type OptFunc = func(*Core)
 // 创建一个对象
 func NewCore(opts ...OptFunc) *Core {
 	c := new(Core)
-	c.stopChan = make(chan struct{})
 	c.lock = new(sync.Mutex)
 	c.pkg = make(map[string]map[string]any)
 	// 初始化全局
@@ -88,6 +85,7 @@ func (c *Core) LoadModule(vm *js.Runtime) {
 
 	// 添加 日志方法 console
 	console.Enable(vm)
+
 	// 加载全局对象
 	c.loadVariable(vm)
 

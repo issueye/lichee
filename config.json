@@ -1,5 +1,6 @@
 {
   "local_port": 10066,
+  "use_db": false,
   "log": {
     "path": "go-plugins",
     "max_size": 10,

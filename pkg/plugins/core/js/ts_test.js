@@ -16,5 +16,3 @@ var Task = /** @class */ (function () {
     };
     return Task;
 }());
-var task = new Task('15');
-task.info("你好");
