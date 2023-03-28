@@ -2,7 +2,7 @@
   "local_port": 10066,
   "use_db": false,
   "log": {
-    "path": "go-plugins",
+    "path": "lichee",
     "max_size": 10,
     "max_age": 10,
     "max_backups": 10,
@@ -14,8 +14,15 @@
       "name": "测试定时任务",
       "id": 1,
       "expr": "0/5 * * * * ?",
-      "benable": true,
+      "benable": false,
       "path": "test.js"
+    },
+    {
+      "name": "掘金摸鱼",
+      "id": 1,
+      "expr": "0 20 9,11,14,16 * * *",
+      "benable": true,
+      "path": "/juejin/hot_fish.js"
     }
   ]
 }
