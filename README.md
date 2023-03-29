@@ -1,10 +1,12 @@
-# <img src="resources/lichee.png" style="zoom: 30%;" />
+
+<div align="center">
+<img src="resources/lichee.png" style="zoom: 30%;" />
 
 # LICHEE ：一个运行 `javascript` 脚本的小工具
 
-通过 `LICHEE` 提供的 `javascript` 脚本执行、定时任务、`http`服务，提供了一个轻量简单的动态工具
+ 支持`javascript` 脚本执行、定时任务、`http`请求
 
-
+</div>
 
 演示视频：
 
@@ -73,13 +75,13 @@
   - `benable` 是否启用
   - `path` 脚本路径
 
-> 在 `use_db` 为 `false` 时可以不需要 `db` 数据库配置节点，数据库当前只添加了对 `sqlserver` 数据库的支持，后续会添加其他数据库的支持
+> 在 `use_db` 为 `false` 时不加载 `db` 数据库配置节点，数据库当前只添加了对 `sqlserver` 数据库的支持，后续会添加其他数据库的支持
 >
-> `job` 任务配置节点是一个数组，可用于配置多个定时任务，定时任务的时间表达式使用的是 `cron` 表达式，请自行了解 `cron` 相关的知识
+> `job` 任务配置节点是一个数组，可配置多个定时任务，定时任务的时间表达式使用的是 `cron` 表达式，请自行了解 `cron` 相关的知识
 >
 > `LICHEE` 的定时任务的脚本路径默认在 `runtime/js` 文件夹下，在运行时会默认到此目录下查找脚本文件
 >
-> `log` 日志输出路径默认在 `runtime/logs/` 下的对应日志输出路径下
+> `log` 日志输出路径默认在 `runtime/logs` 文件夹下的对应日志输出路径下
 
 
 
