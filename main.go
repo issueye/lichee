@@ -19,6 +19,7 @@ var (
 
 func main() {
 	flag.Parse()
+	//
 
 	global.ConfigPath = *config
 	initialize.Initialize()
