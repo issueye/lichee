@@ -1,6 +1,7 @@
 package url
 
 import (
+	"encoding/json"
 	"net/url"
 
 	"github.com/dop251/goja"
@@ -86,11 +87,21 @@ func init() {
 
 		o.Set("parseQuery", func(call goja.FunctionCall) goja.Value {
 			query := call.Argument(0).String()
+			if query == "" {
+				return lib.MakeReturnValue(runtime, "{}")
+			}
 			values, err := url.ParseQuery(query)
 			if err != nil {
 				return lib.MakeErrorValue(runtime, err)
 			}
-			return lib.MakeReturnValue(runtime, NewValues(runtime, values))
+			if len(values) > 0 {
+				val, err := json.Marshal(values)
+				if err != nil {
+					panic("parseQuery Marshal json error:" + err.Error())
+				}
+				return lib.MakeReturnValue(runtime, string(val))
+			}
+			return lib.MakeReturnValue(runtime, "{}")
 		})
 
 		o.Set("newValues", func(call goja.FunctionCall) goja.Value {

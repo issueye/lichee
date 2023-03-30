@@ -3,11 +3,14 @@ module github.com/issueye/lichee
 go 1.18
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/dimiro1/banner v1.1.0
 	github.com/dop251/goja v0.0.0-20230304130813-e2f543bf4b4c
 	github.com/dop251/goja_nodejs v0.0.0-20230320130059-dcf93ba651dd
 	github.com/gin-gonic/gin v1.9.0
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang-module/carbon/v2 v2.2.3
+	github.com/google/uuid v1.3.0
 	github.com/juju/ratelimit v1.0.2
 	github.com/mattn/go-colorable v0.1.13
 	github.com/robfig/cron/v3 v3.0.1
@@ -21,7 +24,6 @@ require (
 )
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/bytedance/sonic v1.8.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -31,7 +33,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.11.2 // indirect
-	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect

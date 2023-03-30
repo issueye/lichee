@@ -14,15 +14,8 @@
       "name": "测试定时任务",
       "id": 1,
       "expr": "0/5 * * * * ?",
-      "benable": false,
-      "path": "test.js"
-    },
-    {
-      "name": "掘金摸鱼",
-      "id": 1,
-      "expr": "0 20 9,11,14,16 * * *",
       "benable": true,
-      "path": "/juejin/hot_fish.js"
+      "path": "test.js"
     }
   ]
 }

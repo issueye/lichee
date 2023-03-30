@@ -10,10 +10,9 @@ vendor
 *.vsix
 tmp
 runtime/logs
-runtime/js
 *.exe
-convert
 *.db
 go-fresh.bat
 runner.conf
 lichee
+.gofresh

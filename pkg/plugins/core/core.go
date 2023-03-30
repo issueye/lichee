@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -156,7 +157,7 @@ func (c *Core) run(path string, vm *js.Runtime) error {
 	c.LoadModule(vm)
 	var tmpPath string
 	if c.globalPath != "" {
-		tmpPath = fmt.Sprintf(`%s/%s`, c.globalPath, path)
+		tmpPath = filepath.Join(c.globalPath, path)
 	} else {
 		tmpPath = path
 	}

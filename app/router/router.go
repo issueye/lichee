@@ -10,10 +10,8 @@ type IRouters interface {
 
 func InitRouter(r *gin.Engine) {
 	name := "api"
-	v1 := "v1"
 	apiName := r.Group(name)
-	version := apiName.Group(v1)
-	registerVersionRouter(version,
+	registerVersionRouter(apiName,
 		&AutoJsRouter{}, // js脚本服务
 	)
 

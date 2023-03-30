@@ -4,7 +4,7 @@
 
 # LICHEE ：一个运行 `javascript` 脚本的小工具
 
- 支持`javascript` 脚本执行、定时任务、`http`请求
+ 支持`javascript` 脚本执行、定时任务、`http server`
 
 </div>
 

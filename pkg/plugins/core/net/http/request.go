@@ -113,12 +113,7 @@ func NewRequest(runtime *goja.Runtime, r *http.Request) *goja.Object {
 	})
 
 	o.Set("cookies", func(call goja.FunctionCall) goja.Value {
-		cks := r.Cookies()
-		arr := make([]*goja.Object, len(cks))
-		for i, v := range cks {
-			arr[i] = NewCookie(runtime, v)
-		}
-		return runtime.ToValue(arr)
+		return runtime.ToValue(r.Cookies())
 	})
 
 	o.Set("getRawBody", func(call goja.FunctionCall) goja.Value {
@@ -127,6 +122,17 @@ func NewRequest(runtime *goja.Runtime, r *http.Request) *goja.Object {
 			return lib.MakeErrorValue(runtime, err)
 		}
 		return lib.MakeReturnValue(runtime, bts)
+	})
+
+	o.Set("getBodyString", func(call goja.FunctionCall) goja.Value {
+		bts, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return lib.MakeErrorValue(runtime, err)
+		}
+		if len(bts) > 0 {
+			return lib.MakeReturnValue(runtime, string(bts))
+		}
+		return lib.MakeReturnValue(runtime, "{}")
 	})
 
 	return o

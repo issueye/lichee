@@ -9,6 +9,7 @@ import (
 
 	js "github.com/dop251/goja"
 	"github.com/dop251/goja_nodejs/require"
+	"github.com/google/uuid"
 )
 
 func GetNativeType(runtime *js.Runtime, call *js.FunctionCall, idx int) interface{} {
@@ -121,6 +122,10 @@ func init() {
 				panic(runtime.NewTypeError("p0 is not []byte or string type:%T", p0))
 			}
 			return runtime.ToValue(hex.EncodeToString(r))
+		})
+
+		o.Set("uuid", func(call js.FunctionCall) js.Value {
+			return runtime.ToValue(uuid.NewString())
 		})
 	})
 }
