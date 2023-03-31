@@ -93,9 +93,6 @@ func (c *Core) LoadModule(vm *js.Runtime) {
 	// 加载外部模块
 	c.registerModule()
 
-	// 转换所有TS文件
-	c.SetProperty("exports", "name", "convert")
-
 	err := c.loadScript(vm, "transaction", "db.js")
 	if err != nil {
 		c.Errorf("加载数据库模块附加方法失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())

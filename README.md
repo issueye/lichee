@@ -10,7 +10,17 @@
 
 演示视频：
 
+
+
+- 定时获取数据库内容
+
 <img src="resources/lichee.gif" style="zoom:80%;" />
+
+
+
+- 爬虫网页内容
+
+  <img src="resources/go-query.gif" style="zoom:70%;" />
 
 
 

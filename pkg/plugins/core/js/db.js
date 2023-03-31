@@ -1,5 +1,4 @@
 var local = require('db/local')
-var other = require('db/other')
 
 var dbTrans = function (db) {
     return function (callback) {
@@ -25,4 +24,3 @@ var dbTrans = function (db) {
 
 // 将方法注入到对象
 local.transaction = dbTrans(local)
-other.transaction = dbTrans(other)
