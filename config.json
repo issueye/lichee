@@ -14,7 +14,7 @@
       "name": "测试定时任务",
       "id": 1,
       "expr": "0/5 * * * * ?",
-      "benable": true,
+      "benable": false,
       "path": "test.js"
     }
   ]

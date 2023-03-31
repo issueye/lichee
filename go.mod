@@ -15,6 +15,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/cast v1.5.0
+	go.etcd.io/bbolt v1.3.7
 	go.uber.org/zap v1.24.0
 	golang.org/x/text v0.7.0
 	gopkg.in/ini.v1 v1.67.0
