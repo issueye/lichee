@@ -8,8 +8,8 @@ import (
 type AutoJsRouter struct{}
 
 func (auto *AutoJsRouter) Register(group *gin.RouterGroup) {
-	gszyy := &v1.AutoJsController{
+	autoJs := &v1.AutoJsController{
 		ScriptTimeoutSec: 10,
 	}
-	group.Any("/*any", gszyy.AutoJsReceiveServer)
+	group.Any("lichee/*any", autoJs.AutoJsReceiveServer)
 }

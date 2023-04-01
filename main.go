@@ -7,8 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/issueye/lichee/app/global"
-
+	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/initialize"
 	_ "github.com/issueye/lichee/docs"
 )
@@ -19,10 +18,13 @@ var (
 
 func main() {
 	flag.Parse()
-	//
 
-	global.ConfigPath = *config
+	common.ConfigPath = *config
 	initialize.Initialize()
+	wait()
+}
+
+func wait() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

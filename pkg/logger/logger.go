@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	carbon "github.com/golang-module/carbon/v2"
 	"github.com/issueye/lichee/app/model"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -121,6 +120,6 @@ func InitLogger(cfg *model.LogConfig) (*zap.SugaredLogger, *zap.Logger) {
 	coreArr = append(coreArr, errorFileCore)
 	logger := zap.New(zapcore.NewTee(coreArr...), zap.AddCaller())
 	Log := logger.Sugar()
-	Log.Debugf("【初始化zap日志完成!】【%s】", carbon.Now().String())
+
 	return Log, logger
 }

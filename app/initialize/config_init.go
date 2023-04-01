@@ -6,12 +6,13 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/issueye/lichee/app/global"
+	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
+	"github.com/issueye/lichee/utils"
 )
 
 func InitConfig() {
-	config := global.ConfigPath
+	config := common.ConfigPath
 	// 读取配置文件地址
 	path, err := os.Getwd()
 	if err != nil {
@@ -35,9 +36,11 @@ func InitConfig() {
 		}
 	}
 
-	global.LocalCfg = new(model.Config)
-	err = json.Unmarshal(data, global.LocalCfg)
+	common.LocalCfg = new(model.Config)
+	err = json.Unmarshal(data, common.LocalCfg)
 	if err != nil {
 		panic(fmt.Errorf("解析配置文件失败，失败原因：%s", err.Error()))
 	}
+
+	fmt.Printf("【%s】配置文件加载完成...\n", utils.Ltime{}.GetNowStr())
 }

@@ -7,7 +7,7 @@ import (
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/golang-module/carbon/v2"
-	"github.com/issueye/lichee/vendor/github.com/google/uuid"
+	"github.com/google/uuid"
 )
 
 type Lid struct{}

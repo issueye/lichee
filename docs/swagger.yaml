@@ -1,0 +1,221 @@
+definitions:
+  common.Base:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      message:
+        description: 状态消息
+        type: string
+      requestDatetime:
+        description: 请求时间
+        type: string
+      requestId:
+        description: 请求ID
+        type: string
+      responseDatetime:
+        description: 返回时间
+        type: string
+    type: object
+  common.Full:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        description: 返回数据
+      message:
+        description: 状态消息
+        type: string
+      requestDatetime:
+        description: 请求时间
+        type: string
+      requestId:
+        description: 请求ID
+        type: string
+      responseDatetime:
+        description: 返回时间
+        type: string
+    type: object
+  model.Job:
+    properties:
+      create_time:
+        description: 创建时间
+        type: string
+      enable:
+        description: 状态
+        type: boolean
+      expr:
+        description: 时间表达式
+        type: string
+      id:
+        description: 任务ID
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 名称
+        type: string
+    type: object
+  model.ReqCreateJob:
+    properties:
+      expr:
+        description: 时间表达式
+        type: string
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 名称
+        type: string
+    required:
+    - expr
+    - name
+    type: object
+  model.ReqModifyJob:
+    properties:
+      expr:
+        description: 时间表达式
+        type: string
+      id:
+        description: 任务ID
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 名称
+        type: string
+    required:
+    - expr
+    - id
+    - name
+    type: object
+info:
+  contact: {}
+paths:
+  /api/job:
+    delete:
+      description: 删除定时任务
+      parameters:
+      - description: 任务ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/common.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/common.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除定时任务
+      tags:
+      - 定时任务管理
+    get:
+      description: 获取定时任务列表
+      parameters:
+      - description: 是否需要分页， 默认需要， 如果不分页 传 true
+        in: query
+        name: isNotPaging
+        type: string
+      - description: 页码， 如果不分页 传 0
+        in: query
+        name: pageNum
+        required: true
+        type: string
+      - description: 一页大小， 如果不分页 传 0
+        in: query
+        name: pageSize
+        required: true
+        type: string
+      - description: 任务名称
+        in: query
+        name: name
+        type: string
+      - description: 任务描述
+        in: query
+        name: mark
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Full'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Job'
+                  type: array
+              type: object
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/common.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取定时任务列表
+      tags:
+      - 定时任务管理
+    post:
+      description: 添加定时任务数据
+      parameters:
+      - description: 添加定时任务数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqCreateJob'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/common.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/common.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 添加定时任务数据
+      tags:
+      - 定时任务管理
+    put:
+      description: 修改定时任务数据
+      parameters:
+      - description: 修改定时任务数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqModifyJob'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/common.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/common.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改定时任务数据
+      tags:
+      - 定时任务管理
+swagger: "2.0"

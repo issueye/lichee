@@ -1,13 +1,15 @@
 package utils
 
 import (
+	"bytes"
 	"database/sql/driver"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/issueye/lichee/vendor/github.com/golang-module/carbon/v2"
+	"github.com/golang-module/carbon/v2"
 )
 
 const (
@@ -264,18 +266,20 @@ func GetTimeFormat(timeStr string) (format string) {
 /**
  * @Description: 长时间
  */
-type LongDateTime time.Time
+type LongDateTime struct {
+	time.Time
+}
 
 // UnmarshalJSON LongDateTime 实现 json 反序列化接口
-func (t *LongDateTime) UnmarshalJSON(data []byte) (err error) {
+func (ld *LongDateTime) UnmarshalJSON(data []byte) (err error) {
 	now, err := time.ParseInLocation(`"`+FormatDateTimeMs+`"`, string(data), time.Local)
-	*t = LongDateTime(now)
+	*ld = LongDateTime{now}
 	return
 }
 
 // MarshalJSON LongDateTime 实现json 序列化
-func (t LongDateTime) MarshalJSON() ([]byte, error) {
-	tTime := time.Time(t)
+func (ld LongDateTime) MarshalJSON() ([]byte, error) {
+	tTime := time.Time(ld.Time)
 	if tTime.IsZero() {
 		return []byte("null"), nil
 	}
@@ -283,12 +287,12 @@ func (t LongDateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t LongDateTime) String() string {
-	return time.Time(t).Format(FormatDateTimeMs)
+	return time.Time(t.Time).Format(FormatDateTimeMs)
 }
 
-func (t LongDateTime) Value() (driver.Value, error) {
+func (ld LongDateTime) Value() (driver.Value, error) {
 	var zeroTime time.Time
-	tlt := time.Time(t)
+	tlt := time.Time(ld.Time)
 	//判断给定时间是否和默认零时间的时间戳相同
 	if tlt.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil
@@ -296,10 +300,41 @@ func (t LongDateTime) Value() (driver.Value, error) {
 	return tlt, nil
 }
 
-func (t *LongDateTime) Scan(v interface{}) error {
+func (ld *LongDateTime) Scan(v interface{}) error {
 	if value, ok := v.(time.Time); ok {
-		*t = LongDateTime(value)
+		*ld = LongDateTime{value}
 		return nil
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)
+}
+
+func (ld LongDateTime) GobEncode() ([]byte, error) {
+	// 序列化 LongDateTime 的 UnixNano 值
+	return gobEncodeInt64(ld.UnixNano()), nil
+}
+
+func (ld *LongDateTime) GobDecode(data []byte) error {
+	// 反序列化 UnixNano 值
+	nano, err := gobDecodeInt64(data)
+	if err != nil {
+		return err
+	}
+	// 将 UnixNano 转换为 LongDateTime
+	ld.Time = time.Unix(0, nano)
+	return nil
+}
+
+// 辅助函数：将 int64 转换为 byte 切片
+func gobEncodeInt64(n int64) []byte {
+	buf := new(bytes.Buffer)
+	binary.Write(buf, binary.BigEndian, n)
+	return buf.Bytes()
+}
+
+// 辅助函数：将 byte 切片转换为 int64
+func gobDecodeInt64(data []byte) (int64, error) {
+	buf := bytes.NewBuffer(data)
+	var n int64
+	err := binary.Read(buf, binary.BigEndian, &n)
+	return n, err
 }

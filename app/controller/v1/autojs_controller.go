@@ -7,7 +7,7 @@ import (
 
 	"github.com/dop251/goja"
 	"github.com/gin-gonic/gin"
-	"github.com/issueye/lichee/app/global"
+	"github.com/issueye/lichee/app/common"
 	mhttp "github.com/issueye/lichee/pkg/plugins/core/net/http"
 )
 
@@ -16,7 +16,7 @@ type AutoJsController struct {
 }
 
 func (gszyy *AutoJsController) AutoJsReceiveServer(ctx *gin.Context) {
-	rtCore := global.GetInitCore()
+	rtCore := common.GetInitCore()
 	rt := rtCore.GetRts()
 	rt.Set("response", mhttp.NewResponse(rt, ctx.Writer))
 	rt.Set("request", mhttp.NewRequest(rt, ctx.Request))

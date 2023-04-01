@@ -1,8 +1,11 @@
 package initialize
 
 import (
-	"github.com/issueye/lichee/app/global"
+	"fmt"
+
+	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/pkg/task"
+	"github.com/issueye/lichee/utils"
 	"github.com/spf13/cast"
 )
 
@@ -13,16 +16,16 @@ type TaskJob struct {
 }
 
 func (t TaskJob) Run() {
-	vm := global.GetInitCore()
+	vm := common.GetInitCore()
 	err := vm.Run(t.Path)
 	if err != nil {
-		global.Log.Errorf("运行脚本【%s】失败，失败原因：%s", err.Error())
+		common.Log.Errorf("运行脚本【%s】失败，失败原因：%s", err.Error())
 		return
 	}
 }
 
 func InitTaskJob() {
-	for _, job := range global.LocalCfg.Job {
+	for _, job := range common.LocalCfg.Job {
 		if job.Benable {
 			task.OwnerTask.Schedule(job.Expr, cast.ToString(job.Id),
 				TaskJob{
@@ -32,4 +35,5 @@ func InitTaskJob() {
 				})
 		}
 	}
+	fmt.Printf("【%s】初始化定时任务完成...\n", utils.Ltime{}.GetNowStr())
 }

@@ -6,10 +6,12 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/issueye/lichee/app/global"
+	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/router"
 	"github.com/issueye/lichee/pkg/middleware"
 	orange_validator "github.com/issueye/lichee/pkg/validator"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/dimiro1/banner"
 	"github.com/gin-gonic/gin"
@@ -17,17 +19,18 @@ import (
 )
 
 func InitHttpServer() {
-	gin.SetMode(gin.ReleaseMode)
-	global.Router = gin.New()
+	// gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
 	orange_validator.RegisterValidator()
 
 	// 加载中间件
-	global.Router.Use(middleware.GinLogger(global.Logger))
-	global.Router.Use(middleware.GinRecovery(global.Logger, false))
-	global.Router.Use(middleware.CORSMiddleware([]string{}))
+	r.Use(middleware.Req())
+	r.Use(middleware.GinLogger(common.Logger))
+	r.Use(middleware.GinRecovery(common.Logger, true))
+	r.Use(middleware.CORSMiddleware([]string{}))
 
 	// 设置一个静态文件服务器
-	global.Router.Static("/www", "./static")
+	r.Static("/www", "./static")
 
 	// 告诉服务文件的MIME类型
 	_ = mime.AddExtensionType(".js", "application/javascript")
@@ -37,15 +40,20 @@ func InitHttpServer() {
 	_ = mime.AddExtensionType(".ttf", "application/font-ttf")
 	_ = mime.AddExtensionType(".eot", "application/vnd.ms-fontobject")
 
+	// 设置 swagger
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// 初始化路由
-	router.InitRouter(global.Router)
-	global.HttpServer = &http.Server{
-		Addr:    fmt.Sprintf(":%d", global.LocalCfg.LocalPort),
-		Handler: global.Router,
+	router.InitRouter(r)
+
+	common.Router = r
+	common.HttpServer = &http.Server{
+		Addr:    fmt.Sprintf(":%d", common.LocalCfg.LocalPort),
+		Handler: common.Router,
 	}
 
 	ShowInfo()
-	err := global.HttpServer.ListenAndServe()
+	err := common.HttpServer.ListenAndServe()
 	if err != nil {
 		panic("http服务开启失败，失败原因：" + err.Error())
 	}
@@ -68,7 +76,7 @@ func ShowInfo() {
 		runtime.GOOS,
 		runtime.GOARCH,
 		runtime.NumCPU(),
-		global.LocalCfg.LocalPort)
+		common.LocalCfg.LocalPort)
 
 	fmt.Println("")
 }

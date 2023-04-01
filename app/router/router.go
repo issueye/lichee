@@ -13,6 +13,7 @@ func InitRouter(r *gin.Engine) {
 	apiName := r.Group(name)
 	registerVersionRouter(apiName,
 		&AutoJsRouter{}, // js脚本服务
+		&JobRouter{},    // 定时任务
 	)
 
 	registerStatic(&r.RouterGroup)
