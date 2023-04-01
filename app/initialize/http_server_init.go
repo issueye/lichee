@@ -9,6 +9,7 @@ import (
 	"github.com/issueye/lichee/app/global"
 	"github.com/issueye/lichee/app/router"
 	"github.com/issueye/lichee/pkg/middleware"
+	orange_validator "github.com/issueye/lichee/pkg/validator"
 
 	"github.com/dimiro1/banner"
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,7 @@ import (
 func InitHttpServer() {
 	gin.SetMode(gin.ReleaseMode)
 	global.Router = gin.New()
+	orange_validator.RegisterValidator()
 
 	// 加载中间件
 	global.Router.Use(middleware.GinLogger(global.Logger))
@@ -68,7 +70,5 @@ func ShowInfo() {
 		runtime.NumCPU(),
 		global.LocalCfg.LocalPort)
 
-	fmt.Println("")
-	fmt.Println("")
 	fmt.Println("")
 }

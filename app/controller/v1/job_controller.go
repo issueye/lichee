@@ -13,6 +13,4 @@ func (job *JobController) Create(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-
-    
 }

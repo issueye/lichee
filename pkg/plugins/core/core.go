@@ -11,7 +11,9 @@ import (
 	js "github.com/dop251/goja"
 	console "github.com/dop251/goja_nodejs/console"
 	"github.com/dop251/goja_nodejs/require"
+	_ "github.com/issueye/lichee/pkg/plugins/core/boltdb"
 	_ "github.com/issueye/lichee/pkg/plugins/core/db"
+	_ "github.com/issueye/lichee/pkg/plugins/core/goquery"
 	_ "github.com/issueye/lichee/pkg/plugins/core/net/http"
 	_ "github.com/issueye/lichee/pkg/plugins/core/net/url"
 	_ "github.com/issueye/lichee/pkg/plugins/core/path"
@@ -95,17 +97,17 @@ func (c *Core) LoadModule(vm *js.Runtime) {
 
 	err := c.loadScript(vm, "transaction", "db.js")
 	if err != nil {
-		c.Errorf("加载数据库模块附加方法失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
+		c.Errorf("加载【db.js】失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
 	}
 
 	err = c.loadScript(vm, "utils-arr2map", "convert.js")
 	if err != nil {
-		c.Errorf("加载 utils 附加方法失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
+		c.Errorf("加载【convert.js】失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
 	}
 
 	err = c.loadScript(vm, "dayjs", "dayjs.min.js")
 	if err != nil {
-		c.Errorf("加载 dayjs 附加方法失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
+		c.Errorf("加载【dayjs.min.js】失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
 	}
 }
 

@@ -3,7 +3,7 @@ package db
 import "database/sql"
 
 var (
-	localDB = new(LocalDB)
+	Ldb = new(LocalDB)
 )
 
 type LocalDB struct {
@@ -11,10 +11,10 @@ type LocalDB struct {
 }
 
 func NewLocalDB(db *sql.DB) {
-	localDB.DB = db
+	Ldb.DB = db
 }
 
 func init() {
 	name := "db/local"
-	RegisterDB(name, localDB)
+	RegisterDB(name, Ldb)
 }
