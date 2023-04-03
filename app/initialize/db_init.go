@@ -41,5 +41,14 @@ func InitBoltDb() {
 		panic(fmt.Sprintf("创建定时任务BUCKET失败，失败原因：%s", err.Error()))
 	}
 
+	err = global.Bdb.Update(func(tx *bbolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(common.USER_BUCKET)
+		return err
+	})
+
+	if err != nil {
+		panic(fmt.Sprintf("创建用户BUCKET失败，失败原因：%s", err.Error()))
+	}
+
 	fmt.Printf("【%s】初始化[JOB]BUCKET完成...\n", utils.Ltime{}.GetNowStr())
 }

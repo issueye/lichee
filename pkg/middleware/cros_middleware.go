@@ -19,6 +19,7 @@ var (
 )
 
 // CORSMiddleware 跨域中间件
+
 func CORSMiddleware(headerMap []string) gin.HandlerFunc {
 	headerMap = append(headerMap, "Authorization")
 	headerMap = append(headerMap, "Content-Length")

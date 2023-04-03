@@ -65,7 +65,7 @@ func (job JobService) GetById(id int64) (*model.Job, error) {
 
 // Query
 // 写入数据
-func (job JobService) Query(req *model.ReqQueryJob) ([]*model.Job, error) {
+func (job JobService) Query(req *model.ReqQueryJob) ([]*model.ResQueryJob, error) {
 	list := make([]*model.Job, 0)
 	err := global.Bdb.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket(common.JOB_BUCKET)
@@ -74,26 +74,41 @@ func (job JobService) Query(req *model.ReqQueryJob) ([]*model.Job, error) {
 
 			// 任务名称
 			if req.Name != "" {
-				err := Find(req.Name, v, data, list)
+				err := Find(req.Name, v, data, &list)
 				if err != nil {
 					return err
 				}
 
+				return nil
 			}
 
-			// 任务备注
-			if req.Mark != "" {
-				err := Find(req.Mark, v, data, list)
-				if err != nil {
-					return err
-				}
+			err := utils.GobBuff{}.BytesToStruct(v, data)
+			if err != nil {
+				common.Log.Errorf("将字节转换为对象失败，失败原因：%s", err.Error())
+				return err
 			}
 
+			list = append(list, data)
 			return nil
 		})
 	})
 
 	// 数据的条数
 	req.Total = int64(len(list))
-	return list, err
+
+	resList := make([]*model.ResQueryJob, 0)
+
+	for _, data := range list {
+		res := new(model.ResQueryJob)
+		res.Id = data.Id
+		res.Name = data.Name
+		res.Expr = data.Expr
+		res.Mark = data.Mark
+		res.Enable = data.Enable
+		res.Path = data.Path
+		res.CreateTime = data.CreateTime.Format(utils.FormatDateTimeMs)
+		resList = append(resList, res)
+	}
+
+	return resList, err
 }

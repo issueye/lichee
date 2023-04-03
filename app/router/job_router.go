@@ -15,5 +15,6 @@ func (job *JobRouter) Register(group *gin.RouterGroup) {
 		g.DELETE("/:id", r.Del)
 		g.PUT("", r.Modify)
 		g.GET("", r.List)
+		g.PUT("/status/:id", r.ModifyStatus)
 	}
 }

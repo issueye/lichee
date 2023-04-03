@@ -273,7 +273,7 @@ type LongDateTime struct {
 // UnmarshalJSON LongDateTime 实现 json 反序列化接口
 func (ld *LongDateTime) UnmarshalJSON(data []byte) (err error) {
 	now, err := time.ParseInLocation(`"`+FormatDateTimeMs+`"`, string(data), time.Local)
-	*ld = LongDateTime{now}
+	*ld = LongDateTime{Time: now}
 	return
 }
 
@@ -302,7 +302,7 @@ func (ld LongDateTime) Value() (driver.Value, error) {
 
 func (ld *LongDateTime) Scan(v interface{}) error {
 	if value, ok := v.(time.Time); ok {
-		*ld = LongDateTime{value}
+		*ld = LongDateTime{Time: value}
 		return nil
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)
@@ -310,7 +310,7 @@ func (ld *LongDateTime) Scan(v interface{}) error {
 
 func (ld LongDateTime) GobEncode() ([]byte, error) {
 	// 序列化 LongDateTime 的 UnixNano 值
-	return gobEncodeInt64(ld.UnixNano()), nil
+	return gobEncodeInt64(ld.Time.Unix()), nil
 }
 
 func (ld *LongDateTime) GobDecode(data []byte) error {

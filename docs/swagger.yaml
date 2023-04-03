@@ -1,43 +1,135 @@
 definitions:
-  common.Base:
+  middleware.JwtToken:
     properties:
-      code:
-        description: 状态码
+      expires:
+        description: 时间
+        type: string
+      id:
+        description: id
         type: integer
-      message:
-        description: 状态消息
+      name:
+        description: 用户名
         type: string
-      requestDatetime:
-        description: 请求时间
+      token:
+        description: token
         type: string
-      requestId:
-        description: 请求ID
-        type: string
-      responseDatetime:
-        description: 返回时间
+      uid:
+        description: 用户ID
         type: string
     type: object
-  common.Full:
+  middleware.LoginUser:
     properties:
-      code:
-        description: 状态码
-        type: integer
-      data:
-        description: 返回数据
-      message:
-        description: 状态消息
+      account:
+        description: 登录名
         type: string
-      requestDatetime:
-        description: 请求时间
-        type: string
-      requestId:
-        description: 请求ID
-        type: string
-      responseDatetime:
-        description: 返回时间
+      password:
+        description: 用户密码
         type: string
     type: object
-  model.Job:
+  model.ReqCreateJob:
+    properties:
+      expr:
+        description: 时间表达式
+        example: 0/5 * * * * ?
+        type: string
+      mark:
+        description: 备注
+        example: 每五秒执行一次脚本
+        type: string
+      name:
+        description: 名称
+        example: 测试定时任务
+        type: string
+      path:
+        description: 脚本路径
+        example: test.js
+        type: string
+    required:
+    - expr
+    - name
+    - path
+    type: object
+  model.ReqCreateUser:
+    properties:
+      account:
+        description: 登录名
+        type: string
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 用户名
+        type: string
+      password:
+        description: 用户密码
+        type: string
+    type: object
+  model.ReqModifyJob:
+    properties:
+      expr:
+        description: 时间表达式
+        type: string
+      id:
+        description: 任务ID
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 名称
+        type: string
+      path:
+        description: 脚本路径
+        type: string
+    required:
+    - expr
+    - id
+    - name
+    - path
+    type: object
+  model.ReqModifyUser:
+    properties:
+      account:
+        description: 登录名
+        type: string
+      id:
+        description: 用户ID
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 用户名
+        type: string
+      password:
+        description: 用户密码
+        type: string
+    type: object
+  model.ReqQueryUser:
+    properties:
+      account:
+        description: 登录名
+        type: string
+      isNotPaging:
+        description: 是否分页
+        type: boolean
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 用户名
+        type: string
+      pageNum:
+        description: 页数
+        type: integer
+      pageSize:
+        description: 页码
+        type: integer
+      total:
+        description: 总数  由服务器返回回去
+        type: integer
+    type: object
+  model.ResQueryJob:
     properties:
       create_time:
         description: 创建时间
@@ -57,69 +149,52 @@ definitions:
       name:
         description: 名称
         type: string
+      path:
+        description: 脚本路径
+        type: string
     type: object
-  model.ReqCreateJob:
+  res.Base:
     properties:
-      expr:
-        description: 时间表达式
-        type: string
-      mark:
-        description: 备注
-        type: string
-      name:
-        description: 名称
-        type: string
-    required:
-    - expr
-    - name
-    type: object
-  model.ReqModifyJob:
-    properties:
-      expr:
-        description: 时间表达式
-        type: string
-      id:
-        description: 任务ID
+      code:
+        description: 状态码
         type: integer
-      mark:
-        description: 备注
+      message:
+        description: 状态消息
         type: string
-      name:
-        description: 名称
+      requestDatetime:
+        description: 请求时间
         type: string
-    required:
-    - expr
-    - id
-    - name
+      requestId:
+        description: 请求ID
+        type: string
+      responseDatetime:
+        description: 返回时间
+        type: string
+    type: object
+  res.Full:
+    properties:
+      code:
+        description: 状态码
+        type: integer
+      data:
+        description: 返回数据
+      message:
+        description: 状态消息
+        type: string
+      requestDatetime:
+        description: 请求时间
+        type: string
+      requestId:
+        description: 请求ID
+        type: string
+      responseDatetime:
+        description: 返回时间
+        type: string
     type: object
 info:
   contact: {}
 paths:
   /api/job:
-    delete:
-      description: 删除定时任务
-      parameters:
-      - description: 任务ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 'code: 200 成功'
-          schema:
-            $ref: '#/definitions/common.Base'
-        "500":
-          description: 错误返回内容
-          schema:
-            $ref: '#/definitions/common.Base'
-      security:
-      - ApiKeyAuth: []
-      summary: 删除定时任务
-      tags:
-      - 定时任务管理
     get:
       description: 获取定时任务列表
       parameters:
@@ -130,12 +205,10 @@ paths:
       - description: 页码， 如果不分页 传 0
         in: query
         name: pageNum
-        required: true
         type: string
       - description: 一页大小， 如果不分页 传 0
         in: query
         name: pageSize
-        required: true
         type: string
       - description: 任务名称
         in: query
@@ -152,17 +225,17 @@ paths:
           description: 'code: 200 成功'
           schema:
             allOf:
-            - $ref: '#/definitions/common.Full'
+            - $ref: '#/definitions/res.Full'
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/model.Job'
+                    $ref: '#/definitions/model.ResQueryJob'
                   type: array
               type: object
         "500":
           description: 错误返回内容
           schema:
-            $ref: '#/definitions/common.Base'
+            $ref: '#/definitions/res.Base'
       security:
       - ApiKeyAuth: []
       summary: 获取定时任务列表
@@ -183,11 +256,11 @@ paths:
         "200":
           description: 'code: 200 成功'
           schema:
-            $ref: '#/definitions/common.Base'
+            $ref: '#/definitions/res.Base'
         "500":
           description: 错误返回内容
           schema:
-            $ref: '#/definitions/common.Base'
+            $ref: '#/definitions/res.Base'
       security:
       - ApiKeyAuth: []
       summary: 添加定时任务数据
@@ -208,14 +281,285 @@ paths:
         "200":
           description: 'code: 200 成功'
           schema:
-            $ref: '#/definitions/common.Base'
+            $ref: '#/definitions/res.Base'
         "500":
           description: 错误返回内容
           schema:
-            $ref: '#/definitions/common.Base'
+            $ref: '#/definitions/res.Base'
       security:
       - ApiKeyAuth: []
       summary: 修改定时任务数据
       tags:
       - 定时任务管理
+  /api/job/{id}:
+    delete:
+      description: 删除定时任务
+      parameters:
+      - description: 任务ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除定时任务
+      tags:
+      - 定时任务管理
+  /api/job/status/{id}:
+    put:
+      description: 修改定时任务数据
+      parameters:
+      - description: 任务ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改定时任务数据
+      tags:
+      - 定时任务管理
+  /api/login:
+    post:
+      description: |-
+        ```
+        用户登录
+        ```
+      parameters:
+      - description: 登录信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/middleware.LoginUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Full'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      summary: 用户登录
+      tags:
+      - 基本接口
+  /api/logout:
+    get:
+      description: 用户登出时，调用此接口
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户登出
+      tags:
+      - 基本接口
+  /api/refreshToken:
+    get:
+      description: 当token即将获取或者过期时刷新token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code:200 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Full'
+            - properties:
+                data:
+                  $ref: '#/definitions/middleware.JwtToken'
+              type: object
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 刷新token
+      tags:
+      - 基本接口
+  /api/user:
+    get:
+      description: 获取用户列表
+      parameters:
+      - description: 是否需要分页， 默认需要， 如果不分页 传 true
+        in: query
+        name: isNotPaging
+        type: string
+      - description: 页码， 如果不分页 传 0
+        in: query
+        name: pageNum
+        type: string
+      - description: 一页大小， 如果不分页 传 0
+        in: query
+        name: pageSize
+        type: string
+      - description: 任务名称
+        in: query
+        name: name
+        type: string
+      - description: 任务名称
+        in: query
+        name: account
+        type: string
+      - description: 任务描述
+        in: query
+        name: mark
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Full'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.ReqQueryUser'
+                  type: array
+              type: object
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户列表
+      tags:
+      - 用户管理
+    post:
+      description: 添加用户
+      parameters:
+      - description: 添加用户
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqCreateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 添加用户
+      tags:
+      - 用户管理
+    put:
+      description: 修改用户信息
+      parameters:
+      - description: 修改用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqModifyUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户信息
+      tags:
+      - 用户管理
+  /api/user/{id}:
+    delete:
+      description: 删除用户
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - 用户管理
+  /api/user/status/{id}:
+    put:
+      description: 停用/启用用户
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 停用/启用用户
+      tags:
+      - 用户管理
 swagger: "2.0"
