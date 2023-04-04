@@ -16,6 +16,196 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/area": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取参数域列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "获取参数域列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "是否需要分页， 默认需要， 如果不分页 传 true",
+                        "name": "isNotPaging",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "页码， 如果不分页 传 0",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "一页大小， 如果不分页 传 0",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "检索内容",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Full"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.ParamArea"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改参数域信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "修改参数域信息",
+                "parameters": [
+                    {
+                        "description": "修改参数域信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqModifyArea"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "添加参数",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "添加参数",
+                "parameters": [
+                    {
+                        "description": "添加参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqCreateArea"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取参数域列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "获取参数域列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "参数域ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            }
+        },
         "/api/job": {
             "get": {
                 "security": [
@@ -271,7 +461,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/middleware.LoginUser"
+                            "$ref": "#/definitions/model.LoginUser"
                         }
                     }
                 ],
@@ -309,6 +499,135 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/param": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改参数信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "修改参数信息",
+                "parameters": [
+                    {
+                        "description": "修改参数信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqModifyParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "添加参数",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "添加参数",
+                "parameters": [
+                    {
+                        "description": "添加参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqCreateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/param/{areaid}/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除参数",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "删除参数",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "参数域ID",
+                        "name": "areaid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "参数ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
                         "schema": {
                             "$ref": "#/definitions/res.Base"
                         }
@@ -636,7 +955,7 @@ const docTemplate = `{
                 }
             }
         },
-        "middleware.LoginUser": {
+        "model.LoginUser": {
             "type": "object",
             "properties": {
                 "account": {
@@ -645,6 +964,65 @@ const docTemplate = `{
                 },
                 "password": {
                     "description": "用户密码",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Param": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "description": "参数域",
+                    "type": "string"
+                },
+                "area_id": {
+                    "description": "参数域id",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "参数名称",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "参数值",
+                    "type": "string"
+                }
+            }
+        },
+        "model.ParamArea": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "域名称",
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReqCreateArea": {
+            "type": "object",
+            "properties": {
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "域名称",
                     "type": "string"
                 }
             }
@@ -679,6 +1057,27 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ReqCreateParam": {
+            "type": "object",
+            "properties": {
+                "area_id": {
+                    "description": "参数域id",
+                    "type": "integer"
+                },
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "参数名称",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "参数值",
+                    "type": "string"
+                }
+            }
+        },
         "model.ReqCreateUser": {
             "type": "object",
             "properties": {
@@ -696,6 +1095,23 @@ const docTemplate = `{
                 },
                 "password": {
                     "description": "用户密码",
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReqModifyArea": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "域名称",
                     "type": "string"
                 }
             }
@@ -727,6 +1143,35 @@ const docTemplate = `{
                 },
                 "path": {
                     "description": "脚本路径",
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReqModifyParam": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "description": "参数域",
+                    "type": "string"
+                },
+                "area_id": {
+                    "description": "参数域id",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "参数名称",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "参数值",
                     "type": "string"
                 }
             }

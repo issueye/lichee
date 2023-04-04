@@ -17,13 +17,55 @@ definitions:
         description: 用户ID
         type: string
     type: object
-  middleware.LoginUser:
+  model.LoginUser:
     properties:
       account:
         description: 登录名
         type: string
       password:
         description: 用户密码
+        type: string
+    type: object
+  model.Param:
+    properties:
+      area:
+        description: 参数域
+        type: string
+      area_id:
+        description: 参数域id
+        type: integer
+      id:
+        description: id
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 参数名称
+        type: string
+      value:
+        description: 参数值
+        type: string
+    type: object
+  model.ParamArea:
+    properties:
+      id:
+        description: id
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 域名称
+        type: string
+    type: object
+  model.ReqCreateArea:
+    properties:
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 域名称
         type: string
     type: object
   model.ReqCreateJob:
@@ -49,6 +91,21 @@ definitions:
     - name
     - path
     type: object
+  model.ReqCreateParam:
+    properties:
+      area_id:
+        description: 参数域id
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 参数名称
+        type: string
+      value:
+        description: 参数值
+        type: string
+    type: object
   model.ReqCreateUser:
     properties:
       account:
@@ -62,6 +119,18 @@ definitions:
         type: string
       password:
         description: 用户密码
+        type: string
+    type: object
+  model.ReqModifyArea:
+    properties:
+      id:
+        description: id
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 域名称
         type: string
     type: object
   model.ReqModifyJob:
@@ -86,6 +155,27 @@ definitions:
     - id
     - name
     - path
+    type: object
+  model.ReqModifyParam:
+    properties:
+      area:
+        description: 参数域
+        type: string
+      area_id:
+        description: 参数域id
+        type: integer
+      id:
+        description: id
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 参数名称
+        type: string
+      value:
+        description: 参数值
+        type: string
     type: object
   model.ReqModifyUser:
     properties:
@@ -194,6 +284,123 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/area:
+    delete:
+      description: 获取参数域列表
+      parameters:
+      - description: 参数域ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取参数域列表
+      tags:
+      - 参数管理
+    get:
+      description: 获取参数域列表
+      parameters:
+      - description: 是否需要分页， 默认需要， 如果不分页 传 true
+        in: query
+        name: isNotPaging
+        type: string
+      - description: 页码， 如果不分页 传 0
+        in: query
+        name: pageNum
+        type: string
+      - description: 一页大小， 如果不分页 传 0
+        in: query
+        name: pageSize
+        type: string
+      - description: 检索内容
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Full'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.ParamArea'
+                  type: array
+              type: object
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取参数域列表
+      tags:
+      - 参数管理
+    post:
+      description: 添加参数
+      parameters:
+      - description: 添加参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqCreateArea'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 添加参数
+      tags:
+      - 参数管理
+    put:
+      description: 修改参数域信息
+      parameters:
+      - description: 修改参数域信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqModifyArea'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改参数域信息
+      tags:
+      - 参数管理
   /api/job:
     get:
       description: 获取定时任务列表
@@ -353,7 +560,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/middleware.LoginUser'
+          $ref: '#/definitions/model.LoginUser'
       produces:
       - application/json
       responses:
@@ -387,6 +594,87 @@ paths:
       summary: 用户登出
       tags:
       - 基本接口
+  /api/param:
+    post:
+      description: 添加参数
+      parameters:
+      - description: 添加参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqCreateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 添加参数
+      tags:
+      - 参数管理
+    put:
+      description: 修改参数信息
+      parameters:
+      - description: 修改参数信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqModifyParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改参数信息
+      tags:
+      - 参数管理
+  /api/param/{areaid}/{id}:
+    delete:
+      description: 删除参数
+      parameters:
+      - description: 参数域ID
+        in: path
+        name: areaid
+        required: true
+        type: string
+      - description: 参数ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除参数
+      tags:
+      - 参数管理
   /api/refreshToken:
     get:
       description: 当token即将获取或者过期时刷新token

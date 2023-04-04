@@ -33,7 +33,7 @@ func (auth *Auth) PayloadFunc(data interface{}) jwt.MapClaims {
 	mapClaims := make(jwt.MapClaims)
 	v, ok := data.(map[string]interface{})
 	if ok {
-		user := new(middleware.User)
+		user := new(model.User)
 		// 将用户json转为结构体
 		utils.Ljson{}.JsonI2Struct(v["user"], user)
 
@@ -62,12 +62,12 @@ func (auth *Auth) IdentityHandler(c *gin.Context) interface{} {
 // @Description ```
 // @Description 用户登录
 // @Description ```
-// @Param       data body     middleware.LoginUser true "登录信息"
+// @Param       data body     model.LoginUser true "登录信息"
 // @Success     200  {object} res.Full
 // @Failure     500  {object} res.Base "错误返回内容"
 // @Router      /api/login [post]
 func (auth *Auth) Login(c *gin.Context) (interface{}, error) {
-	req := new(middleware.LoginUser)
+	req := new(model.LoginUser)
 	// 请求json绑定
 	err := c.ShouldBind(req)
 	if err != nil {
@@ -81,6 +81,13 @@ func (auth *Auth) Login(c *gin.Context) (interface{}, error) {
 
 	if user.Enable == 0 {
 		return nil, errors.New("当前账户已停用")
+	}
+
+	// 修改用户登录时间
+	user.LoginTime = time.Now()
+	err = service.NewUserService().Save(user)
+	if err != nil {
+		return nil, err
 	}
 
 	MapData := make(map[string]interface{})
@@ -97,7 +104,7 @@ func (auth *Auth) Authorizator(data interface{}, c *gin.Context) bool {
 	v, ok := data.(map[string]interface{})
 	if ok {
 		userStr := v["user"].(string)
-		user := new(middleware.User)
+		user := new(model.User)
 		// 将用户json转为结构体
 		utils.Ljson{}.Json2Struct(userStr, &user)
 		// 将用户保存到context, api调用时取数据方便
@@ -173,7 +180,7 @@ func (auth *Auth) RefreshResponse(ctx *gin.Context, _ int, token string, expires
 
 // UserAuth
 // 用户鉴权
-func (auth *Auth) UserAuth(info *middleware.LoginUser) (*middleware.User, error) {
+func (auth *Auth) UserAuth(info *model.LoginUser) (*model.User, error) {
 	req := new(model.ReqQueryUser)
 	req.Account = info.Account
 	user, err := service.NewUserService().FindUser(info)
@@ -213,12 +220,12 @@ func (auth *Auth) GetJwtMaxRefresh() int64 {
 
 // GetUser
 // 获取用户信息
-func (auth *Auth) GetUser(ctx *gin.Context) (*middleware.User, error) {
+func (auth *Auth) GetUser(ctx *gin.Context) (*model.User, error) {
 	user, ok := ctx.Get("user")
 	if !ok {
 		return nil, errors.New("未获取到用户信息")
 	}
 
-	u := user.(*middleware.User)
+	u := user.(*model.User)
 	return u, nil
 }

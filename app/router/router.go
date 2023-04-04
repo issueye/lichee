@@ -30,6 +30,24 @@ func InitRouter(r *gin.Engine) {
 		user.PUT("/status/:id", v1.NewUserController().ModifyStatus)
 	}
 
+	// 参数
+	param := apiName.Group("param")
+	{
+		param.POST("", v1.NewParamController().Create)
+		param.GET("", v1.NewParamController().List)
+		param.PUT("", v1.NewParamController().Modify)
+		param.DELETE("/:areaid/:id", v1.NewParamController().Del)
+	}
+
+	// 参数域
+	area := apiName.Group("area")
+	{
+		area.POST("", v1.NewParamController().CreateArea)
+		area.GET("", v1.NewParamController().AreaList)
+		area.DELETE("/:id", v1.NewParamController().DelArea)
+		area.PUT("", v1.NewParamController().ModifyArea)
+	}
+
 	registerVersionRouter(apiName,
 		&AutoJsRouter{}, // js脚本服务
 		&JobRouter{},    // 定时任务

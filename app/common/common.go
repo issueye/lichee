@@ -26,8 +26,11 @@ var (
 )
 
 var (
-	JOB_BUCKET  = []byte("JOB_BUCKET")
-	USER_BUCKET = []byte("USER_BUCKET")
+	JOB_BUCKET       = []byte("JOB_BUCKET")
+	USER_BUCKET      = []byte("USER_BUCKET")
+	AREA_BUCKET      = []byte("AREA_BUCKET")
+	PARAM_BUCKET     = []byte("PARAM_BUCKET")
+	PARAM_SYS_BYCKET = []byte("PARAM_SYS_BUCKET")
 )
 
 const TokenHeadName = "Bearer" // Token 认证方式
@@ -69,6 +72,18 @@ func JobID(id int64) []byte {
 
 func UserID(id int64) []byte {
 	return []byte(fmt.Sprintf("USER:ID:%d", id))
+}
+
+func AreaID(id int64) []byte {
+	return []byte(fmt.Sprintf("AREA:ID:%d", id))
+}
+
+func AreaBucketID(id int64) []byte {
+	return []byte(fmt.Sprintf("AREA:BUCKET:ID:%d", id))
+}
+
+func ParamID(id int64) []byte {
+	return []byte(fmt.Sprintf("AREA:PARAM:ID:%d", id))
 }
 
 // GetInitCore

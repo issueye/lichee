@@ -29,9 +29,9 @@ type ReqModifyUser struct {
 }
 
 type ReqQueryUser struct {
-	Account string `json:"account"` // 登录名
-	Name    string `json:"name"`    // 用户名
-	Mark    string `json:"mark"`    // 备注
+	Account string `json:"account" form:"account"` // 登录名
+	Name    string `json:"name" form:"name"`       // 用户名
+	Mark    string `json:"mark" form:"mark"`       // 备注
 	PageInfo
 }
 

@@ -4,7 +4,6 @@ import (
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/global"
-	"github.com/issueye/lichee/pkg/middleware"
 	"github.com/issueye/lichee/utils"
 	"go.etcd.io/bbolt"
 )
@@ -38,7 +37,7 @@ func (user UserService) Save(data *model.User) error {
 	})
 }
 
-func (user UserService) FindUser(lu *middleware.LoginUser) (*middleware.User, error) {
+func (user UserService) FindUser(lu *model.LoginUser) (*model.User, error) {
 	data := new(model.User)
 	err := global.Bdb.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket(common.USER_BUCKET)
@@ -51,7 +50,7 @@ func (user UserService) FindUser(lu *middleware.LoginUser) (*middleware.User, er
 			}
 
 			// 判断账号和密码相等的用户
-			if tmpData.Account == lu.Account && tmpData.Password == lu.Password {
+			if tmpData.Account == lu.Account {
 				data = tmpData
 			}
 			return nil
@@ -64,18 +63,7 @@ func (user UserService) FindUser(lu *middleware.LoginUser) (*middleware.User, er
 		return nil, err
 	}
 
-	midUser := &middleware.User{
-		Id:         data.Id,
-		Account:    data.Account,
-		Name:       data.Name,
-		Password:   data.Password,
-		Enable:     data.Enable,
-		Mark:       data.Mark,
-		LoginTime:  data.LoginTime,
-		CreateTime: data.CreateTime,
-	}
-
-	return midUser, nil
+	return data, nil
 }
 
 // Delete
@@ -113,9 +101,9 @@ func (user UserService) Query(req *model.ReqQueryUser) ([]*model.ResQueryUser, e
 		return b.ForEach(func(k, v []byte) error {
 			data := new(model.User)
 
-			// 任务名称
+			// 用户名
 			if req.Name != "" {
-				err := Find(req.Name, v, data, list)
+				err := Find(req.Name, v, data, &list)
 				if err != nil {
 					return err
 				}
@@ -123,19 +111,9 @@ func (user UserService) Query(req *model.ReqQueryUser) ([]*model.ResQueryUser, e
 				return nil
 			}
 
-			// 任务名称
+			// 登录名
 			if req.Account != "" {
-				err := Find(req.Account, v, data, list)
-				if err != nil {
-					return err
-				}
-
-				return nil
-			}
-
-			// 任务备注
-			if req.Mark != "" {
-				err := Find(req.Mark, v, data, list)
+				err := Find(req.Account, v, data, &list)
 				if err != nil {
 					return err
 				}

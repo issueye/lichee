@@ -42,7 +42,8 @@ func (user *UserController) Create(ctx *gin.Context) {
 	data.Name = req.Name
 	data.Account = req.Account
 	data.Password = req.Password
-	data.Enable = 1
+	data.Enable = 0
+	data.Mark = req.Mark
 	data.CreateTime = time.Now()
 
 	err = service.NewUserService().Save(data)
