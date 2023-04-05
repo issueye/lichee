@@ -44,6 +44,7 @@ func (job *JobController) Create(ctx *gin.Context) {
 	data.Id = utils.Lid{}.GenID()
 	data.Mark = req.Mark
 	data.Path = req.Path
+	data.AreaId = req.AreaId // 参数域
 	data.CreateTime = time.Now()
 
 	err = service.NewJobService().Save(data)
@@ -159,6 +160,7 @@ func (job *JobController) Modify(ctx *gin.Context) {
 	j.Expr = req.Expr
 	j.Mark = req.Mark
 	j.Path = req.Path
+	j.AreaId = req.AreaId
 
 	// 保存定时任务信息
 	err = service.NewJobService().Save(j)

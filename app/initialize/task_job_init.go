@@ -7,22 +7,71 @@ import (
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/app/service"
 	"github.com/issueye/lichee/global"
+	"github.com/issueye/lichee/pkg/plugins/core"
+	"github.com/issueye/lichee/utils"
 	"github.com/spf13/cast"
+	"go.etcd.io/bbolt"
 )
 
 type TaskJob struct {
-	Name string
-	Id   int64
-	Path string
+	Name   string
+	Id     int64
+	Path   string
+	AreaId int64
 }
 
 func (t TaskJob) Run() {
 	vm := common.GetInitCore()
-	err := vm.Run(t.Path)
+
+	// 注入系统参数
+	err := regParam(common.SYS_AREA, vm)
 	if err != nil {
-		common.Log.Errorf("运行脚本【%s】失败，失败原因：%s", err.Error())
+		common.Log.Errorf("系统参数注入失败，失败原因：%s", err.Error())
 		return
 	}
+
+	// 注入脚本对应的参数域
+	err = regParam(t.AreaId, vm)
+	if err != nil {
+		common.Log.Errorf("参数注入失败，失败原因：%s", err.Error())
+		return
+	}
+
+	err = vm.Run(t.Path)
+	if err != nil {
+		common.Log.Errorf("运行脚本【%s】失败，失败原因：%s", t.Path, err.Error())
+		return
+	}
+}
+
+func regParam(id int64, vm *core.Core) error {
+	pa, err := service.NewParamService().GetAreaById(id)
+	if err != nil {
+		common.Log.Errorf("根据编码【%d】未找到参数域信息", id)
+		return err
+	}
+
+	// 注入参数域的参数
+	global.Bdb.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket(common.AREA_BUCKET)
+		paramBucket := b.Bucket(common.AreaBucketID(pa.Id))
+		err := paramBucket.ForEach(func(k, v []byte) error {
+			if len(v) > 0 {
+				data := new(model.Param)
+				err := utils.GobBuff{}.BytesToStruct(v, data)
+				if err != nil {
+					return err
+				}
+
+				vm.SetProperty(pa.Name, data.Name, data.Value)
+			}
+
+			return nil
+		})
+		return err
+	})
+
+	return nil
 }
 
 func InitTaskJob() {
@@ -34,13 +83,14 @@ func InitTaskJob() {
 	}
 
 	for _, job := range list {
-		if job.Enable {
+		if job.Enable && job.AreaId != 0 {
 			Job := model.Job{
 				Id:     job.Id,
 				Name:   job.Name,
 				Expr:   job.Expr,
 				Mark:   job.Mark,
 				Enable: job.Enable,
+				AreaId: job.AreaId,
 				Path:   job.Path,
 			}
 
@@ -58,9 +108,10 @@ func Monitor() {
 				case common.JOB_ADD: // 添加定时任务
 					{
 						tj := TaskJob{
-							Name: job.Name,
-							Id:   job.Id,
-							Path: job.Path,
+							Name:   job.Name,
+							Id:     job.Id,
+							Path:   job.Path,
+							AreaId: job.AreaId,
 						}
 						_, err := global.JobTask.Schedule(job.Expr, cast.ToString(job.Id), tj)
 						if err != nil {
@@ -81,9 +132,10 @@ func Monitor() {
 
 						// 添加定时任务
 						tj := TaskJob{
-							Name: job.Name,
-							Id:   job.Id,
-							Path: job.Path,
+							Name:   job.Name,
+							Id:     job.Id,
+							Path:   job.Path,
+							AreaId: job.AreaId,
 						}
 						_, err := global.JobTask.Schedule(job.Expr, cast.ToString(job.Id), tj)
 						if err != nil {

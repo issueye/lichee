@@ -31,6 +31,9 @@ var (
 	AREA_BUCKET      = []byte("AREA_BUCKET")
 	PARAM_BUCKET     = []byte("PARAM_BUCKET")
 	PARAM_SYS_BYCKET = []byte("PARAM_SYS_BUCKET")
+
+	SYS_USER = int64(10000)
+	SYS_AREA = int64(10000)
 )
 
 const TokenHeadName = "Bearer" // Token 认证方式
@@ -61,6 +64,7 @@ func JobGo(j model.Job, t JOB_TYPE) {
 			Mark:   j.Mark,
 			Enable: j.Enable,
 			Path:   j.Path,
+			AreaId: j.AreaId,
 		},
 		Type: t,
 	}

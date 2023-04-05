@@ -99,6 +99,13 @@ func (job JobService) Query(req *model.ReqQueryJob) ([]*model.ResQueryJob, error
 	resList := make([]*model.ResQueryJob, 0)
 
 	for _, data := range list {
+		// 获取参数域
+		pa, err := NewParamService().GetAreaById(data.AreaId)
+		if err != nil {
+			common.Log.Errorf("【%d】未找到参数域信息", data.AreaId)
+			continue
+		}
+
 		res := new(model.ResQueryJob)
 		res.Id = data.Id
 		res.Name = data.Name
@@ -106,6 +113,8 @@ func (job JobService) Query(req *model.ReqQueryJob) ([]*model.ResQueryJob, error
 		res.Mark = data.Mark
 		res.Enable = data.Enable
 		res.Path = data.Path
+		res.AreaId = pa.Id
+		res.Area = pa.Name
 		res.CreateTime = data.CreateTime.Format(utils.FormatDateTimeMs)
 		resList = append(resList, res)
 	}

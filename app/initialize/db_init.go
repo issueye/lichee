@@ -117,8 +117,8 @@ func InitSysBucket() {
 			bucket := tx.Bucket(common.AREA_BUCKET)
 			data := new(model.ParamArea)
 			data.Id = 10000
-			data.Name = "系统参数域"
-			data.Mark = "系统配置的参数域信息"
+			data.Name = "lichee"
+			data.Mark = "系统配置的参数域"
 
 			bufferData, err := utils.GobBuff{}.StructToBytes(data)
 			if err != nil {
