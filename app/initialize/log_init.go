@@ -11,12 +11,12 @@ import (
 
 func InitLogger() {
 	cfg := new(logger.Config)
-	cfg.Path = config.GetSysParam("log-path").String()
-	cfg.Level = config.GetSysParam("log-level").Int()
-	cfg.MaxAge = config.GetSysParam("log-max-age").Int()
-	cfg.MaxBackups = config.GetSysParam("log-max-backups").Int()
-	cfg.MaxSize = config.GetSysParam("log-max-size").Int()
-	cfg.Compress = config.GetSysParam("log-compress").Bool()
+	cfg.Path = config.GetSysParam("logPath").String()
+	cfg.Level = config.GetSysParam("logLevel").Int()
+	cfg.MaxAge = config.GetSysParam("logMaxAge").Int()
+	cfg.MaxBackups = config.GetSysParam("logMaxBackups").Int()
+	cfg.MaxSize = config.GetSysParam("logMaxSize").Int()
+	cfg.Compress = config.GetSysParam("logCompress").Bool()
 	common.Log, common.Logger = logger.InitLogger(cfg)
 	fmt.Printf("【%s】初始化日志完成...\n", utils.Ltime{}.GetNowStr())
 }

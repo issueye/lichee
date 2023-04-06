@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/issueye/lichee/app/model"
-
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
@@ -14,7 +12,7 @@ import (
 
 // InitSqlServer
 // 初始化sqlserver数据库
-func InitSqlServer(cfg *model.DbConfig, log *zap.SugaredLogger) *gorm.DB {
+func InitSqlServer(cfg *Config, log *zap.SugaredLogger) *gorm.DB {
 	dsn := fmt.Sprintf(
 		`sqlserver://%s:%s@%s?database=%s&encrypt=disable`,
 		cfg.Username,

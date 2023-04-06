@@ -1,21 +1,3 @@
 {
-  "local_port": 10066,
-  "use_db": false,
-  "log": {
-    "path": "lichee",
-    "max_size": 10,
-    "max_age": 10,
-    "max_backups": 10,
-    "compress": true,
-    "level": -1
-  },
-  "job": [
-    {
-      "name": "测试定时任务",
-      "id": 1,
-      "expr": "0/5 * * * * ?",
-      "benable": false,
-      "path": "test.js"
-    }
-  ]
+  "local_port": 10066
 }

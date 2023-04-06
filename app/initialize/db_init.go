@@ -7,17 +7,16 @@ import (
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/global"
-	"github.com/issueye/lichee/pkg/db"
 	"github.com/issueye/lichee/utils"
 	"go.etcd.io/bbolt"
 )
 
 func InitDB() {
-	if !common.LocalCfg.UseDB {
-		return
-	}
+	// if !common.LocalCfg.UseDB {
+	// 	return
+	// }
 
-	common.LocalDb = db.InitSqlServer(common.LocalCfg.Db, common.Log)
+	// common.LocalDb = db.InitSqlServer(common.LocalCfg.Db, common.Log)
 
 	fmt.Printf("【%s】初始化数据库完成...\n", utils.Ltime{}.GetNowStr())
 }
