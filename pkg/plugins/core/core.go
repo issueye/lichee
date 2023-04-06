@@ -9,7 +9,6 @@ import (
 	"time"
 
 	js "github.com/dop251/goja"
-	console "github.com/dop251/goja_nodejs/console"
 	"github.com/dop251/goja_nodejs/require"
 	_ "github.com/issueye/lichee/pkg/plugins/core/boltdb"
 	_ "github.com/issueye/lichee/pkg/plugins/core/db"
@@ -18,14 +17,27 @@ import (
 	_ "github.com/issueye/lichee/pkg/plugins/core/net/url"
 	_ "github.com/issueye/lichee/pkg/plugins/core/path"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 //go:embed js/*
 var Script embed.FS
 
 const (
-	GoPlugins = "GoPlugins"
+	GoPlugins = "lichee"
 )
+
+var (
+	globalTransactionProg *js.Program                   // transaction 转换代码的对应编译对象
+	globalConvertProg     *js.Program                   // convert 转换代码的对应编译对象
+	globalDayjsProg       *js.Program                   // dayjs 转换代码的对应编译对象
+	LogMap                = make(map[string]*ZapLogger) // 日志对象
+)
+
+type ZapLogger struct {
+	log   *zap.Logger
+	Close func()
+}
 
 type ModuleFunc = func(vm *js.Runtime, module *js.Object)
 
@@ -46,6 +58,8 @@ type Core struct {
 	logger *zap.Logger
 	// 锁
 	lock *sync.Mutex
+	// Name
+	name string
 }
 
 type OptFunc = func(*Core)
@@ -76,6 +90,60 @@ func OptionLog(log *zap.Logger) OptFunc {
 	}
 }
 
+func getEncoder() zapcore.Encoder {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder // 修改时间编码器
+
+	// 在日志文件中使用大写字母记录日志级别
+	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	// NewConsoleEncoder 打印更符合人们观察的方式
+	return zapcore.NewConsoleEncoder(encoderConfig)
+}
+
+func getLogWriter(path string) (zapcore.WriteSyncer, func(), error) {
+	// file, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0o644) //nolint:gosec
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	return zap.Open(path)
+}
+
+func newZap(path string) (*zap.Logger, func(), error) {
+	encode := getEncoder()
+	ws, close, err := getLogWriter(path)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	core := zapcore.NewCore(encode, ws, zap.DebugLevel)
+	log := zap.New(core, zap.AddCaller())
+	return log, close, nil
+}
+
+func (c *Core) setupJSRuntime(rt *js.Runtime, logger *zap.Logger) error {
+	// 输出日志
+	console := newConsole(logger)
+	o := rt.NewObject()
+	o.Set("log", console.Log)
+	o.Set("debug", console.Debug)
+	o.Set("info", console.Info)
+	o.Set("error", console.Error)
+	o.Set("warn", console.Warn)
+
+	err := rt.Set("console", o)
+	if err != nil {
+		return err
+	}
+
+	// 加载js模块
+	c.loadScript(rt, "transaction", "db.js", globalTransactionProg)
+	c.loadScript(rt, "utils-arr2map", "convert.js", globalConvertProg)
+	c.loadScript(rt, "dayjs", "dayjs.min.js", globalDayjsProg)
+
+	return nil
+}
+
 func (c *Core) LoadModule(vm *js.Runtime) {
 	// require.WithGlobalFolders(path)
 
@@ -87,28 +155,31 @@ func (c *Core) LoadModule(vm *js.Runtime) {
 	registry.Enable(vm)
 
 	// 添加 日志方法 console
-	console.Enable(vm)
+	if c.name == "" {
+		c.name = "lichee-test"
+	}
+
+	log, ok := LogMap[c.name]
+	if !ok {
+		l, close, err := newZap(fmt.Sprintf("runtime/logs/%s.log", c.name))
+		if err != nil {
+			c.Errorf("加载日志失败，失败原因：%s", err.Error())
+		}
+		log = &ZapLogger{
+			log:   l,
+			Close: close,
+		}
+		LogMap[c.name] = log
+	}
+
+	// 设置运行时
+	c.setupJSRuntime(vm, log.log)
 
 	// 加载全局对象
 	c.loadVariable(vm)
 
 	// 加载外部模块
 	c.registerModule()
-
-	err := c.loadScript(vm, "transaction", "db.js")
-	if err != nil {
-		c.Errorf("加载【db.js】失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
-	}
-
-	err = c.loadScript(vm, "utils-arr2map", "convert.js")
-	if err != nil {
-		c.Errorf("加载【convert.js】失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
-	}
-
-	err = c.loadScript(vm, "dayjs", "dayjs.min.js")
-	if err != nil {
-		c.Errorf("加载【dayjs.min.js】失败，失败原因：【%s】，可能影响数据库模块的部分方法或者属性的使用", err.Error())
-	}
 }
 
 // GetRts
@@ -123,26 +194,31 @@ func (c *Core) SetGlobalPath(path string) {
 
 // loadScript
 // 加载文件中的js脚本
-func (c *Core) loadScript(vm *js.Runtime, name string, jsName string) error {
-	path := fmt.Sprintf("js/%s", jsName)
-	src, err := Script.ReadFile(path)
-	if err != nil {
-		c.Errorf("读取文件失败，失败原因：%s", err.Error())
-		return err
+func (c *Core) loadScript(vm *js.Runtime, name string, jsName string, p *js.Program) {
+	if p == nil {
+		path := fmt.Sprintf("js/%s", jsName)
+		src, err := Script.ReadFile(path)
+		if err != nil {
+			c.Errorf("读取文件失败，失败原因：%s", err.Error())
+			return
+		}
+		p, err = js.Compile(name, string(src), false)
+		if err != nil {
+			return
+		}
 	}
-
 	// 运行脚本
-	_, err = vm.RunString(string(src))
+	_, err := vm.RunProgram(p)
 	if err != nil {
 		c.Errorf("运行脚本[%s]失败，失败原因：%s", name, err.Error())
 	}
-	return nil
 }
 
 // Run
 // 运行脚本 文件
-func (c *Core) Run(path string) error {
+func (c *Core) Run(name, path string) error {
 	vm := c.GetRts()
+	c.name = name
 	return c.run(path, vm)
 }
 

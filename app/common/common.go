@@ -34,6 +34,12 @@ var (
 
 	SYS_USER = int64(10000)
 	SYS_AREA = int64(10000)
+
+	SYS_AREA_NAME = "lichee"
+)
+
+const (
+	WS_LOG_GROUP = "LOG_GROUP"
 )
 
 const TokenHeadName = "Bearer" // Token 认证方式

@@ -13,19 +13,6 @@ import (
 )
 
 func InitDB() {
-
-	InitBoltDb()
-	InitAdminUser()
-	InitSysBucket()
-
-	var flag string
-	if common.LocalCfg.UseDB {
-		flag = "是"
-	} else {
-		flag = "否"
-	}
-	fmt.Printf("【%s】是否需要使用SQL数据库：%s\n", utils.Ltime{}.GetNowStr(), flag)
-
 	if !common.LocalCfg.UseDB {
 		return
 	}
@@ -117,7 +104,7 @@ func InitSysBucket() {
 			bucket := tx.Bucket(common.AREA_BUCKET)
 			data := new(model.ParamArea)
 			data.Id = 10000
-			data.Name = "lichee"
+			data.Name = common.SYS_AREA_NAME
 			data.Mark = "系统配置的参数域"
 
 			bufferData, err := utils.GobBuff{}.StructToBytes(data)

@@ -37,7 +37,7 @@ func (t TaskJob) Run() {
 		return
 	}
 
-	err = vm.Run(t.Path)
+	err = vm.Run(t.Name, t.Path)
 	if err != nil {
 		common.Log.Errorf("运行脚本【%s】失败，失败原因：%s", t.Path, err.Error())
 		return
@@ -125,6 +125,12 @@ func Monitor() {
 					{
 						global.JobTask.Remove(cast.ToString(job.Id))
 						common.Log.Debugf("定时任务【%s-%d】删除成功", job.Name, job.Id)
+						// 移除日志对象
+						zl, ok := core.LogMap[job.Name]
+						if ok {
+							zl.Close()
+							delete(core.LogMap, job.Name)
+						}
 					}
 				case common.JOB_MODIFY: // 修改定时任务  先移除任务 再添加定时任务
 					{

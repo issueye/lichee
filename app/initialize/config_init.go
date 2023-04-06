@@ -7,6 +7,7 @@ import (
 	"runtime"
 
 	"github.com/issueye/lichee/app/common"
+	"github.com/issueye/lichee/app/config"
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/utils"
 )
@@ -42,5 +43,18 @@ func InitConfig() {
 		panic(fmt.Errorf("解析配置文件失败，失败原因：%s", err.Error()))
 	}
 
+	InitCfg()
 	fmt.Printf("【%s】配置文件加载完成...\n", utils.Ltime{}.GetNowStr())
+}
+
+// InitCfg
+// 初始化配置信息
+func InitCfg() {
+	fmt.Printf("【%s】开始初始化系统参数...\n", utils.Ltime{}.GetNowStr())
+	config.IsNotExitSetSysParam("log-path", "runtime/logs", "日志路径")
+	config.IsNotExitSetSysParam("log-level", "-1", "日志等级")
+	config.IsNotExitSetSysParam("log-max-age", "10", "日志保存天数")
+	config.IsNotExitSetSysParam("log-max-backups", "10", "日志备份最大数")
+	config.IsNotExitSetSysParam("log-max-size", "5", "单个日志最大大小")
+	config.IsNotExitSetSysParam("log-compress", "true", "是否压缩日志")
 }
