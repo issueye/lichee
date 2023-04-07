@@ -50,6 +50,16 @@ func InitRouter(r *gin.Engine) {
 		area.PUT("", v1.NewParamController().ModifyArea)
 	}
 
+	// 数据库源
+	dbSource := apiName.Group("dbSource")
+	{
+		dbSource.POST("", v1.NewDbController().Create)
+		dbSource.GET("", v1.NewDbController().List)
+		dbSource.DELETE("/:id", v1.NewDbController().Del)
+		dbSource.PUT("", v1.NewDbController().Modify)
+		dbSource.POST("/testLink", v1.NewDbController().TestLink)
+	}
+
 	registerVersionRouter(apiName,
 		&AutoJsRouter{}, // js脚本服务
 		&JobRouter{},    // 定时任务

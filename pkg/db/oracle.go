@@ -4,27 +4,28 @@ import (
 	"fmt"
 	"time"
 
+	oracle "github.com/godoes/gorm-oracle"
 	"go.uber.org/zap"
-	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	glogger "gorm.io/gorm/logger"
 )
 
-// InitSqlServer
-// 初始化sqlserver数据库
-func InitSqlServer(cfg *Config, log *zap.SugaredLogger) (*gorm.DB, error) {
+func InitOracle(cfg *Config, log *zap.SugaredLogger) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
-		`sqlserver://%s:%s@%s?database=%s&encrypt=disable`,
+		"oracle://%s:%s@%s:%d/%s",
 		cfg.Username,
 		cfg.Password,
 		cfg.Host,
+		cfg.Port,
 		cfg.Database,
 	)
+
 	// 隐藏密码
 	showDsn := fmt.Sprintf(
-		"sqlserver://%s:********@%s?database=%s",
+		"oracle://%s:***********@%s:%d/%s",
 		cfg.Username,
 		cfg.Host,
+		cfg.Port,
 		cfg.Database,
 	)
 	newLogger := glogger.New(
@@ -42,13 +43,14 @@ func InitSqlServer(cfg *Config, log *zap.SugaredLogger) (*gorm.DB, error) {
 
 	var l glogger.Interface
 
+	// log = logger.NewWithZap(Log, logConf)
 	if cfg.LogMode {
 		l = newLogger.LogMode(glogger.Info)
 	} else {
 		l = newLogger.LogMode(glogger.Silent)
 	}
 
-	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(oracle.Open(dsn), &gorm.Config{
 		// 禁用外键(指定外键时不会在mysql创建真实的外键约束)
 		DisableForeignKeyConstraintWhenMigrating: true,
 		Logger:                                   l,
@@ -60,7 +62,7 @@ func InitSqlServer(cfg *Config, log *zap.SugaredLogger) (*gorm.DB, error) {
 	}
 
 	db.Debug()
-	log.Infof("连接数据库成功~ dsn: %s", showDsn)
+	log.Infof("初始化oracle数据库完成! dsn: %s", showDsn)
 
 	return db, nil
 }

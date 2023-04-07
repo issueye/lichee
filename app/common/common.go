@@ -6,6 +6,7 @@ import (
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/issueye/lichee/app/model"
+	"github.com/issueye/lichee/pkg/db"
 	"github.com/issueye/lichee/pkg/plugins/core"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,7 @@ var (
 
 var (
 	JOB_BUCKET       = []byte("JOB_BUCKET")
+	DB_SOURCE_BUCKET = []byte("DB_SOURCE_BUCKET")
 	USER_BUCKET      = []byte("USER_BUCKET")
 	AREA_BUCKET      = []byte("AREA_BUCKET")
 	PARAM_BUCKET     = []byte("PARAM_BUCKET")
@@ -80,6 +82,10 @@ func JobID(id int64) []byte {
 	return []byte(fmt.Sprintf("JOB:ID:%d", id))
 }
 
+func DbSourceID(id int64) []byte {
+	return []byte(fmt.Sprintf("DB:SOURCE:ID:%d", id))
+}
+
 func UserID(id int64) []byte {
 	return []byte(fmt.Sprintf("USER:ID:%d", id))
 }
@@ -101,4 +107,43 @@ func ParamID(id int64) []byte {
 func GetInitCore() *core.Core {
 	vm := core.NewCore(core.OptionLog(Logger))
 	return vm
+}
+
+func GetDb(cfg *db.Config, t int) (*gorm.DB, error) {
+	var (
+		d   *gorm.DB
+		err error
+	)
+
+	switch t {
+	case 0:
+		{
+			// 尝试连接
+			d, err = db.InitSqlServer(cfg, Log)
+			if err != nil {
+				Log.Errorf("数据库连接失败，失败原因：%s", err.Error())
+				return nil, err
+			}
+		}
+	case 1:
+		{
+			// 尝试连接
+			d, err = db.InitMysql(cfg, Log)
+			if err != nil {
+				Log.Errorf("数据库连接失败，失败原因：%s", err.Error())
+				return nil, err
+			}
+		}
+	case 2:
+		{
+			// 尝试连接
+			d, err = db.InitOracle(cfg, Log)
+			if err != nil {
+				Log.Errorf("数据库连接失败，失败原因：%s", err.Error())
+				return nil, err
+			}
+		}
+	}
+
+	return d, err
 }

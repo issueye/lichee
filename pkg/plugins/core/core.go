@@ -28,10 +28,9 @@ const (
 )
 
 var (
-	globalTransactionProg *js.Program                   // transaction 转换代码的对应编译对象
-	globalConvertProg     *js.Program                   // convert 转换代码的对应编译对象
-	globalDayjsProg       *js.Program                   // dayjs 转换代码的对应编译对象
-	LogMap                = make(map[string]*ZapLogger) // 日志对象
+	globalConvertProg *js.Program                   // convert 转换代码的对应编译对象
+	globalDayjsProg   *js.Program                   // dayjs 转换代码的对应编译对象
+	LogMap            = make(map[string]*ZapLogger) // 日志对象
 )
 
 type ZapLogger struct {
@@ -101,11 +100,6 @@ func getEncoder() zapcore.Encoder {
 }
 
 func getLogWriter(path string) (zapcore.WriteSyncer, func(), error) {
-	// file, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0o644) //nolint:gosec
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	return zap.Open(path)
 }
 
@@ -137,7 +131,6 @@ func (c *Core) setupJSRuntime(rt *js.Runtime, logger *zap.Logger) error {
 	}
 
 	// 加载js模块
-	c.loadScript(rt, "transaction", "db.js", globalTransactionProg)
 	c.loadScript(rt, "utils-arr2map", "convert.js", globalConvertProg)
 	c.loadScript(rt, "dayjs", "dayjs.min.js", globalDayjsProg)
 

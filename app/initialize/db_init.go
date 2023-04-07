@@ -6,50 +6,70 @@ import (
 
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
+	"github.com/issueye/lichee/app/service"
 	"github.com/issueye/lichee/global"
+	"github.com/issueye/lichee/pkg/db"
+	licheeDB "github.com/issueye/lichee/pkg/plugins/core/db"
 	"github.com/issueye/lichee/utils"
 	"go.etcd.io/bbolt"
 )
 
 func InitDB() {
-	// if !common.LocalCfg.UseDB {
-	// 	return
-	// }
+	req := new(model.ReqQueryDbSource)
+	list, err := service.NewDbSourceService().Query(req)
+	if err != nil {
+		common.Log.Errorf("获取数据库源列表失败，失败原因：%s", err.Error())
+		return
+	}
 
-	// common.LocalDb = db.InitSqlServer(common.LocalCfg.Db, common.Log)
+	for _, data := range list {
+
+		cfg := &db.Config{
+			Username: data.User,
+			Password: data.Password,
+			Host:     data.Host,
+			Database: data.Database,
+			Port:     int(data.Port),
+			LogMode:  true,
+		}
+
+		d, err := common.GetDb(cfg, int(data.Type))
+		if err != nil {
+			common.Log.Errorf("连接数据库【%s】失败，失败原因：%s", data.Name, err.Error())
+			continue
+		}
+
+		info := &global.DbInfo{
+			Cfg:  cfg,
+			Name: data.Name,
+			DB:   d,
+		}
+
+		// 将数据库注册到JS虚拟机
+		licheeDB.RegisterDB(fmt.Sprintf("db/%s", info.Name), info.DB)
+		global.GdbMap[data.Name] = info
+	}
 
 	fmt.Printf("【%s】初始化数据库完成...\n", utils.Ltime{}.GetNowStr())
 }
 
 func InitBoltDb() {
-	err := global.Bdb.Update(func(tx *bbolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(common.JOB_BUCKET)
-		return err
-	})
-
-	if err != nil {
-		panic(fmt.Sprintf("创建定时任务BUCKET失败，失败原因：%s", err.Error()))
-	}
-
-	err = global.Bdb.Update(func(tx *bbolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(common.USER_BUCKET)
-		return err
-	})
-
-	if err != nil {
-		panic(fmt.Sprintf("创建用户BUCKET失败，失败原因：%s", err.Error()))
-	}
-
-	err = global.Bdb.Update(func(tx *bbolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(common.AREA_BUCKET)
-		return err
-	})
-
-	if err != nil {
-		panic(fmt.Sprintf("创建参数域BUCKET失败，失败原因：%s", err.Error()))
-	}
+	CreateBucket(common.JOB_BUCKET, "定时任务")       // JOB_BUCKET
+	CreateBucket(common.USER_BUCKET, "用户")        // USER_BUCKET
+	CreateBucket(common.AREA_BUCKET, "参数域")       // AREA_BUCKET
+	CreateBucket(common.DB_SOURCE_BUCKET, "数据库源") // DB_SOURCE_BUCKET
 
 	fmt.Printf("【%s】初始化BUCKET完成...\n", utils.Ltime{}.GetNowStr())
+}
+
+func CreateBucket(name []byte, describe string) {
+	err := global.Bdb.Update(func(tx *bbolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists(name)
+		return err
+	})
+	if err != nil {
+		panic(fmt.Sprintf("创建[%s]->BUCKET 失败，失败原因：%s", describe, err.Error()))
+	}
 }
 
 func InitAdminUser() {

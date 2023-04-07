@@ -7,84 +7,20 @@ import (
 	js "github.com/dop251/goja"
 	"github.com/dop251/goja_nodejs/require"
 	"github.com/issueye/lichee/pkg/plugins/core/lib"
+	"gorm.io/gorm"
 )
 
-type PluginsDB interface {
-	Query(sqlStr string) ([]map[string]interface{}, error)
-	Exec(sqlStr string) (sql.Result, error)
-	Trans() (*sql.Tx, error)
-	NewExecResult(runtime *js.Runtime, r sql.Result) js.Value
-	NewTx(runtime *js.Runtime, tx *sql.Tx) js.Value
+type sqlResult struct {
+	LastInsertId int64
+	RowsAffected int64
 }
 
-type PDB struct {
-	DB *sql.DB
-}
-
-// Query 查询
-func (pdb *PDB) Query(sqlStr string) ([]map[string]interface{}, error) {
-
-	//产生查询语句的Statement
-	stmt, err := pdb.DB.Prepare(sqlStr)
-	if err != nil {
-		fmt.Printf("生成语句错误，错误原因：%s\n", err.Error())
-		return nil, err
-	}
-	defer stmt.Close()
-
-	//通过Statement执行查询
-	rows, err := stmt.Query()
-	if err != nil {
-		fmt.Printf("查询失败，失败原因：%s\n", err.Error())
-		return nil, err
-	}
-
-	data, err := MakeData(rows)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
-}
-
-func (pdb *PDB) NewExecResult(runtime *js.Runtime, r sql.Result) js.Value {
+func NewExecResult(runtime *js.Runtime, r sqlResult) js.Value {
 	o := runtime.NewObject()
-	o.Set("lastInsertId", func(call js.FunctionCall) js.Value {
-		id, err := r.LastInsertId()
-		if err != nil {
-			return lib.MakeErrorValue(runtime, err)
-		}
-		return lib.MakeReturnValue(runtime, id)
-	})
-
 	o.Set("rowsAffected", func(call js.FunctionCall) js.Value {
-		count, err := r.RowsAffected()
-		if err != nil {
-			return lib.MakeErrorValue(runtime, err)
-		}
-		return lib.MakeReturnValue(runtime, count)
+		return lib.MakeReturnValue(runtime, r.RowsAffected)
 	})
 	return o
-}
-
-// Exec 执行
-func (pdb *PDB) Exec(sqlStr string) (sql.Result, error) {
-	r, err := pdb.DB.Exec(sqlStr)
-	if err != nil {
-		fmt.Printf("执行脚本失败，失败原因：%s\n", err.Error())
-		return nil, err
-	}
-	return r, nil
-}
-
-// Trans
-// 执行
-func (pdb *PDB) Trans() (*sql.Tx, error) {
-	r, err := pdb.DB.Begin()
-	if err != nil {
-		fmt.Printf("生成事务对象失败，失败原因：%s\n", err.Error())
-		return nil, err
-	}
-	return r, nil
 }
 
 // MakeData
@@ -121,37 +57,55 @@ func MakeData(rows *sql.Rows) ([]map[string]interface{}, error) {
 	return data, nil
 }
 
-func RegisterDB(moduleName string, pdb PluginsDB) {
+func RegisterDB(moduleName string, gdb *gorm.DB) {
 	require.RegisterNativeModule(moduleName, func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 		// query 查询
 		o.Set("query", func(call js.FunctionCall) js.Value {
-			pSql := call.Arguments[0]
-			rows, err := pdb.Query(pSql.String())
+			sqlStr := call.Argument(0).String()
+			// 查询数据
+			result := gdb.Raw(sqlStr)
+
+			if result.Error != nil {
+				return lib.MakeErrorValue(runtime, result.Error)
+			}
+
+			rows, err := result.Rows()
 			if err != nil {
 				return lib.MakeErrorValue(runtime, err)
 			}
-			return lib.MakeReturnValue(runtime, rows)
+
+			// 生成数据
+			data, err := MakeData(rows)
+			if err != nil {
+				return lib.MakeErrorValue(runtime, err)
+			}
+
+			return lib.MakeReturnValue(runtime, data)
 		})
 
 		// exec 执行语句 增删改
 		o.Set("exec", func(call js.FunctionCall) js.Value {
-			pSql := call.Arguments[0]
-			r, err := pdb.Exec(pSql.String())
-			if err != nil {
-				return lib.MakeErrorValue(runtime, err)
+			sqlStr := call.Argument(0).String()
+			result := gdb.Exec(sqlStr)
+			if result.Error != nil {
+				return lib.MakeErrorValue(runtime, result.Error)
 			}
-			return lib.MakeReturnValue(runtime, pdb.NewExecResult(runtime, r))
+
+			// 获取返回
+			return lib.MakeReturnValue(runtime, NewExecResult(runtime, sqlResult{
+				RowsAffected: result.RowsAffected,
+			}))
 		})
 
 		// 事务
 		// begin 开启事务
 		o.Set("begin", func(call js.FunctionCall) js.Value {
-			tx, err := pdb.Trans()
-			if err != nil {
-				return lib.MakeErrorValue(runtime, err)
+			tx := gdb.Begin()
+			if tx.Error != nil {
+				return lib.MakeErrorValue(runtime, tx.Error)
 			}
-			return lib.MakeReturnValue(runtime, pdb.NewTx(runtime, tx))
+			return lib.MakeReturnValue(runtime, NewTx(runtime, tx))
 		})
 	})
 }
