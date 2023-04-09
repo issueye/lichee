@@ -17,15 +17,16 @@ func NewParamController() *ParamController {
 }
 
 // Create doc
-// @tags        参数管理
-// @Summary     添加参数
-// @Description 添加参数
-// @Produce     json
-// @Param       data body     model.ReqCreateParam true "添加参数"
-// @Success     200  {object} res.Base             true "code: 200 成功"
-// @Failure     500  {object} res.Base             true "错误返回内容"
-// @Router      /api/param [post]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		添加参数
+//	@Description	添加参数
+//	@Produce		json
+//	@Param			data	body		model.ReqCreateParam	true	"添加参数"
+//	@Success		200		{object}	res.Base				"code: 200 成功"
+//	@Failure		500		{object}	res.Base				"错误返回内容"
+//	@Router			/api/param [post]
+//	@Security		ApiKeyAuth
 func (control *ParamController) Create(ctx *gin.Context) {
 	req := new(model.ReqCreateParam)
 	err := ctx.Bind(req)
@@ -60,16 +61,17 @@ func (control *ParamController) Create(ctx *gin.Context) {
 }
 
 // Del doc
-// @tags        参数管理
-// @Summary     删除参数
-// @Description 删除参数
-// @Produce     json
-// @Param       areaid path     string   true "参数域ID"
-// @Param       id     path     string   true "参数ID"
-// @Success     200    {object} res.Base true "code: 200 成功"
-// @Failure     500    {object} res.Base true "错误返回内容"
-// @Router      /api/param/{areaid}/{id} [delete]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		删除参数
+//	@Description	删除参数
+//	@Produce		json
+//	@Param			areaid	path		string		true	"参数域ID"
+//	@Param			id		path		string		true	"参数ID"
+//	@Success		200		{object}	res.Base	"code: 200 成功"
+//	@Failure		500		{object}	res.Base	"错误返回内容"
+//	@Router			/api/param/{areaid}/{id} [delete]
+//	@Security		ApiKeyAuth
 func (control *ParamController) Del(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
@@ -95,15 +97,16 @@ func (control *ParamController) Del(ctx *gin.Context) {
 }
 
 // Modify doc
-// @tags        参数管理
-// @Summary     修改参数信息
-// @Description 修改参数信息
-// @Produce     json
-// @Param       data body     model.ReqModifyParam true "修改参数信息"
-// @Success     200  {object} res.Base             true "code: 200 成功"
-// @Failure     500  {object} res.Base             true "错误返回内容"
-// @Router      /api/param [put]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		修改参数信息
+//	@Description	修改参数信息
+//	@Produce		json
+//	@Param			data	body		model.ReqModifyParam	true	"修改参数信息"
+//	@Success		200		{object}	res.Base				"code: 200 成功"
+//	@Failure		500		{object}	res.Base				"错误返回内容"
+//	@Router			/api/param [put]
+//	@Security		ApiKeyAuth
 func (control *ParamController) Modify(ctx *gin.Context) {
 	req := new(model.ReqModifyParam)
 	err := ctx.Bind(req)
@@ -136,23 +139,24 @@ func (control *ParamController) Modify(ctx *gin.Context) {
 		return
 	}
 
-	res.SuccessByMsg(ctx, "修改用户信息成功")
+	res.SuccessByMsg(ctx, "修改参数信息成功")
 }
 
 // List doc
-// @tags        参数管理
-// @Summary     获取参数列表
-// @Description 获取参数列表
-// @Produce     json
-// @Param       isNotPaging query    string                       false "是否需要分页， 默认需要， 如果不分页 传 true"
-// @Param       pageNum     query    string                       false "页码， 如果不分页 传 0"
-// @Param       pageSize    query    string                       false "一页大小， 如果不分页 传 0"
-// @Param       name        query    string                       false "查询内容"
-// @Param       area_id     query    int                          true  "参数域ID"
-// @Success     200         {object} res.Full{data=[]model.Param} true  "code: 200 成功"
-// @Failure     500         {object} res.Base                     true  "错误返回内容"
-// @Router      /api/user [get]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		获取参数列表
+//	@Description	获取参数列表
+//	@Produce		json
+//	@Param			isNotPaging	query		string							false	"是否需要分页， 默认需要， 如果不分页 传 true"
+//	@Param			pageNum		query		string							false	"页码， 如果不分页 传 0"
+//	@Param			pageSize	query		string							false	"一页大小， 如果不分页 传 0"
+//	@Param			name		query		string							false	"查询内容"
+//	@Param			area_id		query		int								true	"参数域ID"
+//	@Success		200			{object}	res.Full{data=[]model.Param}	"code: 200 成功"
+//	@Failure		500			{object}	res.Base						"错误返回内容"
+//	@Router			/api/param [get]
+//	@Security		ApiKeyAuth
 func (control *ParamController) List(ctx *gin.Context) {
 	req := new(model.ReqQueryParam)
 	err := ctx.BindQuery(req)
@@ -168,8 +172,8 @@ func (control *ParamController) List(ctx *gin.Context) {
 
 	list, err := service.NewParamService().Query(req)
 	if err != nil {
-		common.Log.Errorf("查询用户信息失败，失败原因：%s", err.Error())
-		res.FailByMsg(ctx, "查询用户信息失败")
+		common.Log.Errorf("查询参数列表失败，失败原因：%s", err.Error())
+		res.FailByMsg(ctx, "查询参数列表失败")
 		return
 	}
 
@@ -179,15 +183,16 @@ func (control *ParamController) List(ctx *gin.Context) {
 /**************************area*****************************/
 
 // Create doc
-// @tags        参数管理
-// @Summary     添加参数
-// @Description 添加参数
-// @Produce     json
-// @Param       data body     model.ReqCreateArea true "添加参数"
-// @Success     200  {object} res.Base            true "code: 200 成功"
-// @Failure     500  {object} res.Base            true "错误返回内容"
-// @Router      /api/area [post]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		添加参数
+//	@Description	添加参数
+//	@Produce		json
+//	@Param			data	body		model.ReqCreateArea	true	"添加参数"
+//	@Success		200		{object}	res.Base			"code: 200 成功"
+//	@Failure		500		{object}	res.Base			"错误返回内容"
+//	@Router			/api/area [post]
+//	@Security		ApiKeyAuth
 func (control *ParamController) CreateArea(ctx *gin.Context) {
 	req := new(model.ReqCreateArea)
 	err := ctx.Bind(req)
@@ -211,18 +216,19 @@ func (control *ParamController) CreateArea(ctx *gin.Context) {
 }
 
 // AreaList doc
-// @tags        参数管理
-// @Summary     获取参数域列表
-// @Description 获取参数域列表
-// @Produce     json
-// @Param       isNotPaging query    string                           false "是否需要分页， 默认需要， 如果不分页 传 true"
-// @Param       pageNum     query    string                           false "页码， 如果不分页 传 0"
-// @Param       pageSize    query    string                           false "一页大小， 如果不分页 传 0"
-// @Param       name        query    string                           false "检索内容"
-// @Success     200         {object} res.Full{data=[]model.ParamArea} true  "code: 200 成功"
-// @Failure     500         {object} res.Base                         true  "错误返回内容"
-// @Router      /api/area [get]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		获取参数域列表
+//	@Description	获取参数域列表
+//	@Produce		json
+//	@Param			isNotPaging	query		string								false	"是否需要分页， 默认需要， 如果不分页 传 true"
+//	@Param			pageNum		query		string								false	"页码， 如果不分页 传 0"
+//	@Param			pageSize	query		string								false	"一页大小， 如果不分页 传 0"
+//	@Param			name		query		string								false	"检索内容"
+//	@Success		200			{object}	res.Full{data=[]model.ParamArea}	"code: 200 成功"
+//	@Failure		500			{object}	res.Base							"错误返回内容"
+//	@Router			/api/area [get]
+//	@Security		ApiKeyAuth
 func (control *ParamController) AreaList(ctx *gin.Context) {
 	req := new(model.ReqQueryArea)
 	err := ctx.BindQuery(req)
@@ -242,15 +248,16 @@ func (control *ParamController) AreaList(ctx *gin.Context) {
 }
 
 // DelArea doc
-// @tags        参数管理
-// @Summary     获取参数域列表
-// @Description 获取参数域列表
-// @Produce     json
-// @Param       id  path     string   true "参数域ID"
-// @Success     200 {object} res.Base true "code: 200 成功"
-// @Failure     500 {object} res.Base true "错误返回内容"
-// @Router      /api/area [DELETE]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		获取参数域列表
+//	@Description	获取参数域列表
+//	@Produce		json
+//	@Param			id	path		string		true	"参数域ID"
+//	@Success		200	{object}	res.Base	"code: 200 成功"
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/area/{id} [DELETE]
+//	@Security		ApiKeyAuth
 func (control *ParamController) DelArea(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
@@ -269,15 +276,16 @@ func (control *ParamController) DelArea(ctx *gin.Context) {
 }
 
 // ModifyArea doc
-// @tags        参数管理
-// @Summary     修改参数域信息
-// @Description 修改参数域信息
-// @Produce     json
-// @Param       data body     model.ReqModifyArea true "修改参数域信息"
-// @Success     200  {object} res.Base            true "code: 200 成功"
-// @Failure     500  {object} res.Base            true "错误返回内容"
-// @Router      /api/area [put]
-// @Security    ApiKeyAuth
+//
+//	@tags			参数管理
+//	@Summary		修改参数域信息
+//	@Description	修改参数域信息
+//	@Produce		json
+//	@Param			data	body		model.ReqModifyArea	true	"修改参数域信息"
+//	@Success		200		{object}	res.Base			"code: 200 成功"
+//	@Failure		500		{object}	res.Base			"错误返回内容"
+//	@Router			/api/area [put]
+//	@Security		ApiKeyAuth
 func (control *ParamController) ModifyArea(ctx *gin.Context) {
 	req := new(model.ReqModifyArea)
 	err := ctx.Bind(req)

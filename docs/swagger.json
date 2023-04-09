@@ -154,7 +154,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/api/area/{id}": {
             "delete": {
                 "security": [
                     {
@@ -173,6 +175,240 @@
                     {
                         "type": "string",
                         "description": "参数域ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dbSource": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取数据库源列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "数据库源管理"
+                ],
+                "summary": "获取数据库源列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "是否需要分页， 默认需要， 如果不分页 传 true",
+                        "name": "isNotPaging",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "页码， 如果不分页 传 0",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "一页大小， 如果不分页 传 0",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "数据源名称",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Full"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.ReqQueryDbSource"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改数据库源数据",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "数据库源管理"
+                ],
+                "summary": "修改数据库源数据",
+                "parameters": [
+                    {
+                        "description": "修改定时任务数据",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqModifyDbSource"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "添加数据库源",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "数据库源管理"
+                ],
+                "summary": "添加数据库源",
+                "parameters": [
+                    {
+                        "description": "添加参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqCreateDbSource"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dbSource/testLink": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改数据库源数据",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "数据库源管理"
+                ],
+                "summary": "修改数据库源数据",
+                "parameters": [
+                    {
+                        "description": "修改定时任务数据",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqModifyDbSource"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dbSource/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除数据库源",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "数据库源管理"
+                ],
+                "summary": "删除数据库源",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -501,6 +737,83 @@
             }
         },
         "/api/param": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取参数列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "参数管理"
+                ],
+                "summary": "获取参数列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "是否需要分页， 默认需要， 如果不分页 传 true",
+                        "name": "isNotPaging",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "页码， 如果不分页 传 0",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "一页大小， 如果不分页 传 0",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "查询内容",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "参数域ID",
+                        "name": "area_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.Full"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.Param"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            },
             "put": {
                 "security": [
                     {
@@ -1015,14 +1328,72 @@
                 }
             }
         },
+        "model.ReqCreateDbSource": {
+            "type": "object",
+            "required": [
+                "database",
+                "host",
+                "name",
+                "password",
+                "port",
+                "user"
+            ],
+            "properties": {
+                "database": {
+                    "description": "数据库",
+                    "type": "string",
+                    "example": "TEST"
+                },
+                "host": {
+                    "description": "地址",
+                    "type": "string",
+                    "example": "192.168.200.66/gy"
+                },
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string",
+                    "example": "测试SQLSERVER_001"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "example": "123456"
+                },
+                "port": {
+                    "description": "端口号",
+                    "type": "integer",
+                    "example": 1433
+                },
+                "type": {
+                    "description": "类型",
+                    "type": "integer",
+                    "example": 0
+                },
+                "user": {
+                    "description": "账号",
+                    "type": "string",
+                    "example": "sa"
+                }
+            }
+        },
         "model.ReqCreateJob": {
             "type": "object",
             "required": [
+                "area_id",
                 "expr",
                 "name",
                 "path"
             ],
             "properties": {
+                "area_id": {
+                    "description": "参数域ID",
+                    "type": "integer",
+                    "example": 10000
+                },
                 "expr": {
                     "description": "时间表达式",
                     "type": "string",
@@ -1104,15 +1475,79 @@
                 }
             }
         },
+        "model.ReqModifyDbSource": {
+            "type": "object",
+            "required": [
+                "database",
+                "host",
+                "id",
+                "name",
+                "password",
+                "port",
+                "user"
+            ],
+            "properties": {
+                "database": {
+                    "description": "数据库",
+                    "type": "string",
+                    "example": "TEST"
+                },
+                "host": {
+                    "description": "地址",
+                    "type": "string",
+                    "example": "192.168.200.66/gy"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "integer",
+                    "example": 10000
+                },
+                "mark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string",
+                    "example": "测试SQLSERVER_001"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "example": "123456"
+                },
+                "port": {
+                    "description": "端口号",
+                    "type": "integer",
+                    "example": 1433
+                },
+                "type": {
+                    "description": "类型",
+                    "type": "integer",
+                    "example": 0
+                },
+                "user": {
+                    "description": "账号",
+                    "type": "string",
+                    "example": "sa"
+                }
+            }
+        },
         "model.ReqModifyJob": {
             "type": "object",
             "required": [
+                "area_id",
                 "expr",
                 "id",
                 "name",
                 "path"
             ],
             "properties": {
+                "area_id": {
+                    "description": "参数域ID",
+                    "type": "integer",
+                    "example": 10000
+                },
                 "expr": {
                     "description": "时间表达式",
                     "type": "string"
@@ -1189,6 +1624,31 @@
                 }
             }
         },
+        "model.ReqQueryDbSource": {
+            "type": "object",
+            "properties": {
+                "isNotPaging": {
+                    "description": "是否分页",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "pageNum": {
+                    "description": "页数",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "页码",
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "总数  由服务器返回回去",
+                    "type": "integer"
+                }
+            }
+        },
         "model.ReqQueryUser": {
             "type": "object",
             "properties": {
@@ -1225,6 +1685,13 @@
         "model.ResQueryJob": {
             "type": "object",
             "properties": {
+                "area": {
+                    "description": "参数域",
+                    "type": "string"
+                },
+                "area_id": {
+                    "type": "integer"
+                },
                 "create_time": {
                     "description": "创建时间",
                     "type": "string"
@@ -1260,7 +1727,11 @@
             "properties": {
                 "code": {
                     "description": "状态码",
-                    "type": "integer"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.RCode"
+                        }
+                    ]
                 },
                 "message": {
                     "description": "状态消息",
@@ -1285,7 +1756,11 @@
             "properties": {
                 "code": {
                     "description": "状态码",
-                    "type": "integer"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.RCode"
+                        }
+                    ]
                 },
                 "data": {
                     "description": "返回数据"
@@ -1307,6 +1782,35 @@
                     "type": "string"
                 }
             }
+        },
+        "res.RCode": {
+            "type": "integer",
+            "enum": [
+                200,
+                201,
+                400,
+                401,
+                404,
+                405,
+                500,
+                501,
+                502,
+                504,
+                505
+            ],
+            "x-enum-varnames": [
+                "OK",
+                "OK_CREATE",
+                "BAD_REQUEST",
+                "UNAUTHORIZED",
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "INTERNAL_SERVER_ERROR",
+                "NOT_IMPLEMENTED",
+                "BAD_GATEWAY",
+                "GATEWAY_TIMEOUT",
+                "HTTP_VERSION_NOT_SUPPORTED"
+            ]
         }
     }
 }

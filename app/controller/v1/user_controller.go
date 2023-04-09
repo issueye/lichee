@@ -20,15 +20,15 @@ func NewUserController() *UserController {
 }
 
 // Create doc
-// @tags        用户管理
-// @Summary     添加用户
-// @Description 添加用户
-// @Produce     json
-// @Param       data body     model.ReqCreateUser true "添加用户"
-// @Success     200  {object} res.Base            true "code: 200 成功"
-// @Failure     500  {object} res.Base            true "错误返回内容"
-// @Router      /api/user [post]
-// @Security    ApiKeyAuth
+//	@tags			用户管理
+//	@Summary		添加用户
+//	@Description	添加用户
+//	@Produce		json
+//	@Param			data	body		model.ReqCreateUser	true	"添加用户"
+//	@Success		200		{object}	res.Base			"code: 200 成功"
+//	@Failure		500		{object}	res.Base			"错误返回内容"
+//	@Router			/api/user [post]
+//	@Security		ApiKeyAuth
 func (user *UserController) Create(ctx *gin.Context) {
 	req := new(model.ReqCreateUser)
 	err := ctx.Bind(req)
@@ -57,20 +57,20 @@ func (user *UserController) Create(ctx *gin.Context) {
 }
 
 // List doc
-// @tags        用户管理
-// @Summary     获取用户列表
-// @Description 获取用户列表
-// @Produce     json
-// @Param       isNotPaging query    string                              false "是否需要分页， 默认需要， 如果不分页 传 true"
-// @Param       pageNum     query    string                              false "页码， 如果不分页 传 0"
-// @Param       pageSize    query    string                              false "一页大小， 如果不分页 传 0"
-// @Param       name        query    string                              false "任务名称"
-// @Param       account     query    string                              false "任务名称"
-// @Param       mark        query    string                              false "任务描述"
-// @Success     200         {object} res.Full{data=[]model.ReqQueryUser} true  "code: 200 成功"
-// @Failure     500         {object} res.Base                            true  "错误返回内容"
-// @Router      /api/user [get]
-// @Security    ApiKeyAuth
+//	@tags			用户管理
+//	@Summary		获取用户列表
+//	@Description	获取用户列表
+//	@Produce		json
+//	@Param			isNotPaging	query		string								false	"是否需要分页， 默认需要， 如果不分页 传 true"
+//	@Param			pageNum		query		string								false	"页码， 如果不分页 传 0"
+//	@Param			pageSize	query		string								false	"一页大小， 如果不分页 传 0"
+//	@Param			name		query		string								false	"任务名称"
+//	@Param			account		query		string								false	"任务名称"
+//	@Param			mark		query		string								false	"任务描述"
+//	@Success		200			{object}	res.Full{data=[]model.ReqQueryUser}	"code: 200 成功"
+//	@Failure		500			{object}	res.Base							"错误返回内容"
+//	@Router			/api/user [get]
+//	@Security		ApiKeyAuth
 func (user *UserController) List(ctx *gin.Context) {
 	req := new(model.ReqQueryUser)
 	err := ctx.BindQuery(req)
@@ -92,15 +92,15 @@ func (user *UserController) List(ctx *gin.Context) {
 }
 
 // Del doc
-// @tags        用户管理
-// @Summary     删除用户
-// @Description 删除用户
-// @Produce     json
-// @Param       id  path     string   true "用户ID"
-// @Success     200  {object} res.Base            true "code: 200 成功"
-// @Failure     500  {object} res.Base            true "错误返回内容"
-// @Router      /api/user/{id} [delete]
-// @Security    ApiKeyAuth
+//	@tags			用户管理
+//	@Summary		删除用户
+//	@Description	删除用户
+//	@Produce		json
+//	@Param			id	path		string		true	"用户ID"
+//	@Success		200	{object}	res.Base	"code: 200 成功"
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/user/{id} [delete]
+//	@Security		ApiKeyAuth
 func (user *UserController) Del(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
@@ -120,15 +120,15 @@ func (user *UserController) Del(ctx *gin.Context) {
 }
 
 // Modify doc
-// @tags        用户管理
-// @Summary     修改用户信息
-// @Description 修改用户信息
-// @Produce     json
-// @Param       data body     model.ReqModifyUser true "修改用户信息"
-// @Success     200 {object} res.Base true "code: 200 成功"
-// @Failure     500 {object} res.Base true "错误返回内容"
-// @Router      /api/user [put]
-// @Security    ApiKeyAuth
+//	@tags			用户管理
+//	@Summary		修改用户信息
+//	@Description	修改用户信息
+//	@Produce		json
+//	@Param			data	body		model.ReqModifyUser	true	"修改用户信息"
+//	@Success		200		{object}	res.Base			"code: 200 成功"
+//	@Failure		500		{object}	res.Base			"错误返回内容"
+//	@Router			/api/user [put]
+//	@Security		ApiKeyAuth
 func (user *UserController) Modify(ctx *gin.Context) {
 	req := new(model.ReqModifyUser)
 	err := ctx.Bind(req)
@@ -162,15 +162,15 @@ func (user *UserController) Modify(ctx *gin.Context) {
 }
 
 // ModifyStatus doc
-// @tags        用户管理
-// @Summary     停用/启用用户
-// @Description 停用/启用用户
-// @Produce     json
-// @Param       id  path     string   true "用户ID"
-// @Success     200 {object} res.Base true "code: 200 成功"
-// @Failure     500 {object} res.Base true "错误返回内容"
-// @Router      /api/user/status/{id} [put]
-// @Security    ApiKeyAuth
+//	@tags			用户管理
+//	@Summary		停用/启用用户
+//	@Description	停用/启用用户
+//	@Produce		json
+//	@Param			id	path		string		true	"用户ID"
+//	@Success		200	{object}	res.Base	"code: 200 成功"
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/user/status/{id} [put]
+//	@Security		ApiKeyAuth
 func (user *UserController) ModifyStatus(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {

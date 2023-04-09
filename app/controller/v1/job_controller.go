@@ -20,15 +20,16 @@ func NewJobController() *JobController {
 }
 
 // Create doc
-// @tags        定时任务管理
-// @Summary     添加定时任务数据
-// @Description 添加定时任务数据
-// @Produce     json
-// @Param       data body     model.ReqCreateJob true "添加定时任务数据"
-// @Success     200  {object} res.Base           true "code: 200 成功"
-// @Failure     500  {object} res.Base           true "错误返回内容"
-// @Router      /api/job [post]
-// @Security    ApiKeyAuth
+//
+//	@tags			定时任务管理
+//	@Summary		添加定时任务数据
+//	@Description	添加定时任务数据
+//	@Produce		json
+//	@Param			data	body		model.ReqCreateJob	true	"添加定时任务数据"
+//	@Success		200		{object}	res.Base			"code: 200 成功"
+//	@Failure		500		{object}	res.Base			"错误返回内容"
+//	@Router			/api/job [post]
+//	@Security		ApiKeyAuth
 func (job *JobController) Create(ctx *gin.Context) {
 	req := new(model.ReqCreateJob)
 	err := ctx.Bind(req)
@@ -58,19 +59,20 @@ func (job *JobController) Create(ctx *gin.Context) {
 }
 
 // List doc
-// @tags        定时任务管理
-// @Summary     获取定时任务列表
-// @Description 获取定时任务列表
-// @Produce     json
-// @Param       isNotPaging query    string                             false "是否需要分页， 默认需要， 如果不分页 传 true"
-// @Param       pageNum     query    string                             false "页码， 如果不分页 传 0"
-// @Param       pageSize    query    string                             false "一页大小， 如果不分页 传 0"
-// @Param       name        query    string                             false "任务名称"
-// @Param       mark        query    string                             false "任务描述"
-// @Success     200         {object} res.Full{data=[]model.ResQueryJob} true  "code: 200 成功"
-// @Failure     500         {object} res.Base                           true  "错误返回内容"
-// @Router      /api/job [get]
-// @Security    ApiKeyAuth
+//
+//	@tags			定时任务管理
+//	@Summary		获取定时任务列表
+//	@Description	获取定时任务列表
+//	@Produce		json
+//	@Param			isNotPaging	query		string								false	"是否需要分页， 默认需要， 如果不分页 传 true"
+//	@Param			pageNum		query		string								false	"页码， 如果不分页 传 0"
+//	@Param			pageSize	query		string								false	"一页大小， 如果不分页 传 0"
+//	@Param			name		query		string								false	"任务名称"
+//	@Param			mark		query		string								false	"任务描述"
+//	@Success		200			{object}	res.Full{data=[]model.ResQueryJob}	"code: 200 成功"
+//	@Failure		500			{object}	res.Base							"错误返回内容"
+//	@Router			/api/job [get]
+//	@Security		ApiKeyAuth
 func (job *JobController) List(ctx *gin.Context) {
 	req := new(model.ReqQueryJob)
 	err := ctx.BindQuery(req)
@@ -92,15 +94,16 @@ func (job *JobController) List(ctx *gin.Context) {
 }
 
 // Del doc
-// @tags        定时任务管理
-// @Summary     删除定时任务
-// @Description 删除定时任务
-// @Produce     json
-// @Param       id  path     string   true "任务ID"
-// @Success     200 {object} res.Base true "code: 200 成功"
-// @Failure     500 {object} res.Base true "错误返回内容"
-// @Router      /api/job/{id} [delete]
-// @Security    ApiKeyAuth
+//
+//	@tags			定时任务管理
+//	@Summary		删除定时任务
+//	@Description	删除定时任务
+//	@Produce		json
+//	@Param			id	path		string		true	"任务ID"
+//	@Success		200	{object}	res.Base	"code: 200 成功"
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/job/{id} [delete]
+//	@Security		ApiKeyAuth
 func (job *JobController) Del(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
@@ -131,15 +134,16 @@ func (job *JobController) Del(ctx *gin.Context) {
 }
 
 // Modify doc
-// @tags        定时任务管理
-// @Summary     修改定时任务数据
-// @Description 修改定时任务数据
-// @Produce     json
-// @Param       data body     model.ReqModifyJob true "修改定时任务数据"
-// @Success     200  {object} res.Base           true "code: 200 成功"
-// @Failure     500  {object} res.Base           true "错误返回内容"
-// @Router      /api/job [put]
-// @Security    ApiKeyAuth
+//
+//	@tags			定时任务管理
+//	@Summary		修改定时任务数据
+//	@Description	修改定时任务数据
+//	@Produce		json
+//	@Param			data	body		model.ReqModifyJob	true	"修改定时任务数据"
+//	@Success		200		{object}	res.Base			"code: 200 成功"
+//	@Failure		500		{object}	res.Base			"错误返回内容"
+//	@Router			/api/job [put]
+//	@Security		ApiKeyAuth
 func (job *JobController) Modify(ctx *gin.Context) {
 	req := new(model.ReqModifyJob)
 	err := ctx.Bind(req)
@@ -178,15 +182,16 @@ func (job *JobController) Modify(ctx *gin.Context) {
 }
 
 // ModifyStatus doc
-// @tags        定时任务管理
-// @Summary     修改定时任务数据
-// @Description 修改定时任务数据
-// @Produce     json
-// @Param       id  path     string   true "任务ID"
-// @Success     200 {object} res.Base true "code: 200 成功"
-// @Failure     500 {object} res.Base true "错误返回内容"
-// @Router      /api/job/status/{id} [put]
-// @Security    ApiKeyAuth
+//
+//	@tags			定时任务管理
+//	@Summary		修改定时任务数据
+//	@Description	修改定时任务数据
+//	@Produce		json
+//	@Param			id	path		string		true	"任务ID"
+//	@Success		200	{object}	res.Base	"code: 200 成功"
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/job/status/{id} [put]
+//	@Security		ApiKeyAuth
 func (job *JobController) ModifyStatus(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {

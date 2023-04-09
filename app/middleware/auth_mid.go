@@ -56,16 +56,16 @@ func (auth *Auth) IdentityHandler(c *gin.Context) interface{} {
 }
 
 // Login godoc
-// @tags        基本接口
-// @Summary     用户登录
-// @Produce     json
-// @Description ```
-// @Description 用户登录
-// @Description ```
-// @Param       data body     model.LoginUser true "登录信息"
-// @Success     200  {object} res.Full
-// @Failure     500  {object} res.Base "错误返回内容"
-// @Router      /api/login [post]
+//	@tags			基本接口
+//	@Summary		用户登录
+//	@Produce		json
+//	@Description	```
+//	@Description	用户登录
+//	@Description	```
+//	@Param			data	body		model.LoginUser	true	"登录信息"
+//	@Success		200		{object}	res.Full
+//	@Failure		500		{object}	res.Base	"错误返回内容"
+//	@Router			/api/login [post]
 func (auth *Auth) Login(c *gin.Context) (interface{}, error) {
 	req := new(model.LoginUser)
 	// 请求json绑定
@@ -149,28 +149,28 @@ func (auth *Auth) LoginResponse(ctx *gin.Context, _ int, token string, expires t
 }
 
 // LogoutResponse godoc
-// @tags        基本接口
-// @Summary     用户登出
-// @Description 用户登出时，调用此接口
-// @Produce     json
-// @Success     200 {object} res.Base
-// @Failure     500 {object} res.Base                "错误返回内容"
-// @Router      /api/logout [get]
-// @Security    ApiKeyAuth
+//	@tags			基本接口
+//	@Summary		用户登出
+//	@Description	用户登出时，调用此接口
+//	@Produce		json
+//	@Success		200	{object}	res.Base
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/logout [get]
+//	@Security		ApiKeyAuth
 func (auth *Auth) LogoutResponse(ctx *gin.Context, _ int) {
 	common.Log.Info("退出成功")
 	res.Success(ctx)
 }
 
 // RefreshResponse godoc
-// @tags        基本接口
-// @Summary     刷新token
-// @Description 当token即将获取或者过期时刷新token
-// @Produce     json
-// @Success     200 {object} res.Full{data=JwtToken} "code:200 成功"
-// @Failure     500 {object} res.Base "错误返回内容"
-// @Router      /api/refreshToken [get]
-// @Security    ApiKeyAuth
+//	@tags			基本接口
+//	@Summary		刷新token
+//	@Description	当token即将获取或者过期时刷新token
+//	@Produce		json
+//	@Success		200	{object}	res.Full{data=JwtToken}	"code:200 成功"
+//	@Failure		500	{object}	res.Base				"错误返回内容"
+//	@Router			/api/refreshToken [get]
+//	@Security		ApiKeyAuth
 func (auth *Auth) RefreshResponse(ctx *gin.Context, _ int, token string, expires time.Time) {
 	jt := new(JwtToken)
 	jt.Token = strings.Join([]string{common.TokenHeadName, token}, " ")

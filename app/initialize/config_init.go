@@ -51,10 +51,15 @@ func InitConfig() {
 // 初始化配置信息
 func InitCfg() {
 	fmt.Printf("【%s】开始初始化系统参数...\n", utils.Ltime{}.GetNowStr())
+
+	// log
 	config.IsNotExitSetSysParam("logPath", "runtime/logs", "日志路径")
 	config.IsNotExitSetSysParam("logLevel", "-1", "日志等级")
 	config.IsNotExitSetSysParam("logMaxAge", "10", "日志保存天数")
 	config.IsNotExitSetSysParam("logMaxBackups", "10", "日志备份最大数")
 	config.IsNotExitSetSysParam("logMaxSize", "5", "单个日志最大大小")
 	config.IsNotExitSetSysParam("logCompress", "true", "是否压缩日志")
+
+	// sys
+	config.IsNotExitSetSysParam("sysRunMode", "release", "服务运行模式")
 }

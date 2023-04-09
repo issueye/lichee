@@ -68,8 +68,53 @@ definitions:
         description: 域名称
         type: string
     type: object
+  model.ReqCreateDbSource:
+    properties:
+      database:
+        description: 数据库
+        example: TEST
+        type: string
+      host:
+        description: 地址
+        example: 192.168.200.66/gy
+        type: string
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 名称
+        example: 测试SQLSERVER_001
+        type: string
+      password:
+        description: 密码
+        example: "123456"
+        type: string
+      port:
+        description: 端口号
+        example: 1433
+        type: integer
+      type:
+        description: 类型
+        example: 0
+        type: integer
+      user:
+        description: 账号
+        example: sa
+        type: string
+    required:
+    - database
+    - host
+    - name
+    - password
+    - port
+    - user
+    type: object
   model.ReqCreateJob:
     properties:
+      area_id:
+        description: 参数域ID
+        example: 10000
+        type: integer
       expr:
         description: 时间表达式
         example: 0/5 * * * * ?
@@ -87,6 +132,7 @@ definitions:
         example: test.js
         type: string
     required:
+    - area_id
     - expr
     - name
     - path
@@ -133,8 +179,58 @@ definitions:
         description: 域名称
         type: string
     type: object
+  model.ReqModifyDbSource:
+    properties:
+      database:
+        description: 数据库
+        example: TEST
+        type: string
+      host:
+        description: 地址
+        example: 192.168.200.66/gy
+        type: string
+      id:
+        description: ID
+        example: 10000
+        type: integer
+      mark:
+        description: 备注
+        type: string
+      name:
+        description: 名称
+        example: 测试SQLSERVER_001
+        type: string
+      password:
+        description: 密码
+        example: "123456"
+        type: string
+      port:
+        description: 端口号
+        example: 1433
+        type: integer
+      type:
+        description: 类型
+        example: 0
+        type: integer
+      user:
+        description: 账号
+        example: sa
+        type: string
+    required:
+    - database
+    - host
+    - id
+    - name
+    - password
+    - port
+    - user
+    type: object
   model.ReqModifyJob:
     properties:
+      area_id:
+        description: 参数域ID
+        example: 10000
+        type: integer
       expr:
         description: 时间表达式
         type: string
@@ -151,6 +247,7 @@ definitions:
         description: 脚本路径
         type: string
     required:
+    - area_id
     - expr
     - id
     - name
@@ -195,6 +292,24 @@ definitions:
         description: 用户密码
         type: string
     type: object
+  model.ReqQueryDbSource:
+    properties:
+      isNotPaging:
+        description: 是否分页
+        type: boolean
+      name:
+        description: 名称
+        type: string
+      pageNum:
+        description: 页数
+        type: integer
+      pageSize:
+        description: 页码
+        type: integer
+      total:
+        description: 总数  由服务器返回回去
+        type: integer
+    type: object
   model.ReqQueryUser:
     properties:
       account:
@@ -221,6 +336,11 @@ definitions:
     type: object
   model.ResQueryJob:
     properties:
+      area:
+        description: 参数域
+        type: string
+      area_id:
+        type: integer
       create_time:
         description: 创建时间
         type: string
@@ -246,8 +366,9 @@ definitions:
   res.Base:
     properties:
       code:
+        allOf:
+        - $ref: '#/definitions/res.RCode'
         description: 状态码
-        type: integer
       message:
         description: 状态消息
         type: string
@@ -264,8 +385,9 @@ definitions:
   res.Full:
     properties:
       code:
+        allOf:
+        - $ref: '#/definitions/res.RCode'
         description: 状态码
-        type: integer
       data:
         description: 返回数据
       message:
@@ -281,34 +403,36 @@ definitions:
         description: 返回时间
         type: string
     type: object
+  res.RCode:
+    enum:
+    - 200
+    - 201
+    - 400
+    - 401
+    - 404
+    - 405
+    - 500
+    - 501
+    - 502
+    - 504
+    - 505
+    type: integer
+    x-enum-varnames:
+    - OK
+    - OK_CREATE
+    - BAD_REQUEST
+    - UNAUTHORIZED
+    - NOT_FOUND
+    - METHOD_NOT_ALLOWED
+    - INTERNAL_SERVER_ERROR
+    - NOT_IMPLEMENTED
+    - BAD_GATEWAY
+    - GATEWAY_TIMEOUT
+    - HTTP_VERSION_NOT_SUPPORTED
 info:
   contact: {}
 paths:
   /api/area:
-    delete:
-      description: 获取参数域列表
-      parameters:
-      - description: 参数域ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 'code: 200 成功'
-          schema:
-            $ref: '#/definitions/res.Base'
-        "500":
-          description: 错误返回内容
-          schema:
-            $ref: '#/definitions/res.Base'
-      security:
-      - ApiKeyAuth: []
-      summary: 获取参数域列表
-      tags:
-      - 参数管理
     get:
       description: 获取参数域列表
       parameters:
@@ -401,6 +525,175 @@ paths:
       summary: 修改参数域信息
       tags:
       - 参数管理
+  /api/area/{id}:
+    delete:
+      description: 获取参数域列表
+      parameters:
+      - description: 参数域ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取参数域列表
+      tags:
+      - 参数管理
+  /api/dbSource:
+    get:
+      description: 获取数据库源列表
+      parameters:
+      - description: 是否需要分页， 默认需要， 如果不分页 传 true
+        in: query
+        name: isNotPaging
+        type: string
+      - description: 页码， 如果不分页 传 0
+        in: query
+        name: pageNum
+        type: string
+      - description: 一页大小， 如果不分页 传 0
+        in: query
+        name: pageSize
+        type: string
+      - description: 数据源名称
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Full'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.ReqQueryDbSource'
+                  type: array
+              type: object
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取数据库源列表
+      tags:
+      - 数据库源管理
+    post:
+      description: 添加数据库源
+      parameters:
+      - description: 添加参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqCreateDbSource'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 添加数据库源
+      tags:
+      - 数据库源管理
+    put:
+      description: 修改数据库源数据
+      parameters:
+      - description: 修改定时任务数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqModifyDbSource'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改数据库源数据
+      tags:
+      - 数据库源管理
+  /api/dbSource/{id}:
+    delete:
+      description: 删除数据库源
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除数据库源
+      tags:
+      - 数据库源管理
+  /api/dbSource/testLink:
+    post:
+      description: 修改数据库源数据
+      parameters:
+      - description: 修改定时任务数据
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqModifyDbSource'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            $ref: '#/definitions/res.Base'
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改数据库源数据
+      tags:
+      - 数据库源管理
   /api/job:
     get:
       description: 获取定时任务列表
@@ -595,6 +888,53 @@ paths:
       tags:
       - 基本接口
   /api/param:
+    get:
+      description: 获取参数列表
+      parameters:
+      - description: 是否需要分页， 默认需要， 如果不分页 传 true
+        in: query
+        name: isNotPaging
+        type: string
+      - description: 页码， 如果不分页 传 0
+        in: query
+        name: pageNum
+        type: string
+      - description: 一页大小， 如果不分页 传 0
+        in: query
+        name: pageSize
+        type: string
+      - description: 查询内容
+        in: query
+        name: name
+        type: string
+      - description: 参数域ID
+        in: query
+        name: area_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'code: 200 成功'
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Full'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Param'
+                  type: array
+              type: object
+        "500":
+          description: 错误返回内容
+          schema:
+            $ref: '#/definitions/res.Base'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取参数列表
+      tags:
+      - 参数管理
     post:
       description: 添加参数
       parameters:

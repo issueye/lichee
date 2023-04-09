@@ -13,6 +13,32 @@ type console struct {
 	logger *zap.Logger
 }
 
+func getEncoder() zapcore.Encoder {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder // 修改时间编码器
+
+	// 在日志文件中使用大写字母记录日志级别
+	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	// NewConsoleEncoder 打印更符合人们观察的方式
+	return zapcore.NewJSONEncoder(encoderConfig)
+}
+
+func getLogWriter(path string) (zapcore.WriteSyncer, func(), error) {
+	return zap.Open(path)
+}
+
+func newZap(path string) (*zap.Logger, func(), error) {
+	encode := getEncoder()
+	ws, close, err := getLogWriter(path)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	core := zapcore.NewCore(encode, ws, zap.DebugLevel)
+	log := zap.New(core, zap.AddCaller())
+	return log, close, nil
+}
+
 func newConsole(log *zap.Logger) *console {
 	return &console{logger: log}
 }

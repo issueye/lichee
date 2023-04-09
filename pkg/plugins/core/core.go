@@ -17,7 +17,6 @@ import (
 	_ "github.com/issueye/lichee/pkg/plugins/core/net/url"
 	_ "github.com/issueye/lichee/pkg/plugins/core/path"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 //go:embed js/*
@@ -87,32 +86,6 @@ func OptionLog(log *zap.Logger) OptFunc {
 	return func(core *Core) {
 		core.logger = log
 	}
-}
-
-func getEncoder() zapcore.Encoder {
-	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder // 修改时间编码器
-
-	// 在日志文件中使用大写字母记录日志级别
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-	// NewConsoleEncoder 打印更符合人们观察的方式
-	return zapcore.NewConsoleEncoder(encoderConfig)
-}
-
-func getLogWriter(path string) (zapcore.WriteSyncer, func(), error) {
-	return zap.Open(path)
-}
-
-func newZap(path string) (*zap.Logger, func(), error) {
-	encode := getEncoder()
-	ws, close, err := getLogWriter(path)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	core := zapcore.NewCore(encode, ws, zap.DebugLevel)
-	log := zap.New(core, zap.AddCaller())
-	return log, close, nil
 }
 
 func (c *Core) setupJSRuntime(rt *js.Runtime, logger *zap.Logger) error {

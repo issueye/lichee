@@ -3,10 +3,12 @@ package initialize
 import (
 	"fmt"
 	"mime"
+	"net"
 	"net/http"
 	"runtime"
 
 	"github.com/issueye/lichee/app/common"
+	"github.com/issueye/lichee/app/config"
 	"github.com/issueye/lichee/app/router"
 	"github.com/issueye/lichee/pkg/middleware"
 	orange_validator "github.com/issueye/lichee/pkg/validator"
@@ -19,7 +21,8 @@ import (
 )
 
 func InitHttpServer() {
-	// gin.SetMode(gin.ReleaseMode)
+	mode := config.GetSysParam("sysRunMode").String()
+	gin.SetMode(mode)
 	r := gin.New()
 	orange_validator.RegisterValidator()
 
@@ -45,18 +48,27 @@ func InitHttpServer() {
 
 	// 初始化路由
 	router.InitRouter(r)
-
-	common.Router = r
-	common.HttpServer = &http.Server{
-		Addr:    fmt.Sprintf(":%d", common.LocalCfg.LocalPort),
-		Handler: common.Router,
-	}
-
+	// 显示 banner
 	ShowInfo()
-	err := common.HttpServer.ListenAndServe()
-	if err != nil {
-		panic("http服务开启失败，失败原因：" + err.Error())
+	// 启动 监听
+	ListenAndServe(fmt.Sprintf(":%d", common.LocalCfg.LocalPort), r)
+}
+
+type tcpKeepAliveListener struct {
+	*net.TCPListener
+}
+
+func ListenAndServe(addr string, handler http.Handler) error {
+	srv := &http.Server{Addr: addr, Handler: handler}
+	addr = srv.Addr
+	if addr == "" {
+		addr = ":http"
 	}
+	ln, err := net.Listen("tcp4", addr) // 仅指定 IPv6
+	if err != nil {
+		return err
+	}
+	return srv.Serve(tcpKeepAliveListener{ln.(*net.TCPListener)})
 }
 
 func ShowInfo() {

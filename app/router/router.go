@@ -16,14 +16,14 @@ func InitRouter(r *gin.Engine) {
 	common.Auth = middleware.NewAuth()
 	apiName := r.Group(name)
 
-	r.GET("ws", v1.WsLogMonitor)
+	r.GET("ws", v1.WsLogMonitor, common.Auth.MiddlewareFunc())
 
 	// 鉴权API
 	apiName.POST("/login", common.Auth.LoginHandler)
 	apiName.GET("/refresh", common.Auth.RefreshHandler)
 	apiName.GET("/logout", common.Auth.LogoutHandler)
 
-	user := apiName.Group("user")
+	user := apiName.Group("user", common.Auth.MiddlewareFunc())
 	{
 		user.POST("", v1.NewUserController().Create)
 		user.DELETE("/:id", v1.NewUserController().Del)
@@ -33,7 +33,7 @@ func InitRouter(r *gin.Engine) {
 	}
 
 	// 参数
-	param := apiName.Group("param")
+	param := apiName.Group("param", common.Auth.MiddlewareFunc())
 	{
 		param.POST("", v1.NewParamController().Create)
 		param.GET("", v1.NewParamController().List)
@@ -42,7 +42,7 @@ func InitRouter(r *gin.Engine) {
 	}
 
 	// 参数域
-	area := apiName.Group("area")
+	area := apiName.Group("area", common.Auth.MiddlewareFunc())
 	{
 		area.POST("", v1.NewParamController().CreateArea)
 		area.GET("", v1.NewParamController().AreaList)
@@ -51,7 +51,7 @@ func InitRouter(r *gin.Engine) {
 	}
 
 	// 数据库源
-	dbSource := apiName.Group("dbSource")
+	dbSource := apiName.Group("dbSource", common.Auth.MiddlewareFunc())
 	{
 		dbSource.POST("", v1.NewDbController().Create)
 		dbSource.GET("", v1.NewDbController().List)

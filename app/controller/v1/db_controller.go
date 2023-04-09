@@ -22,15 +22,16 @@ func NewDbController() *DbController {
 }
 
 // Create doc
-// @tags        数据库源管理
-// @Summary     添加数据库源
-// @Description 添加数据库源
-// @Produce     json
-// @Param       data body     model.ReqCreateDbSource true "添加参数"
-// @Success     200  {object} res.Base             true "code: 200 成功"
-// @Failure     500  {object} res.Base             true "错误返回内容"
-// @Router      /api/dbSource [post]
-// @Security    ApiKeyAuth
+//
+//	@tags			数据库源管理
+//	@Summary		添加数据库源
+//	@Description	添加数据库源
+//	@Produce		json
+//	@Param			data	body		model.ReqCreateDbSource	true	"添加参数"
+//	@Success		200		{object}	res.Base				"code: 200 成功"
+//	@Failure		500		{object}	res.Base				"错误返回内容"
+//	@Router			/api/dbSource [post]
+//	@Security		ApiKeyAuth
 func (control *DbController) Create(ctx *gin.Context) {
 	req := new(model.ReqCreateDbSource)
 	err := ctx.Bind(req)
@@ -86,18 +87,19 @@ func (control *DbController) Create(ctx *gin.Context) {
 }
 
 // List doc
-// @tags        数据库源管理
-// @Summary     获取数据库源列表
-// @Description 获取数据库源列表
-// @Produce     json
-// @Param       isNotPaging query    string                             false "是否需要分页， 默认需要， 如果不分页 传 true"
-// @Param       pageNum     query    string                             false "页码， 如果不分页 传 0"
-// @Param       pageSize    query    string                             false "一页大小， 如果不分页 传 0"
-// @Param       name        query    string                             false "数据源名称"
-// @Success     200         {object} res.Full{data=[]model.ResQueryJob} true  "code: 200 成功"
-// @Failure     500         {object} res.Base                           true  "错误返回内容"
-// @Router      /api/dbSource [get]
-// @Security    ApiKeyAuth
+//
+//	@tags			数据库源管理
+//	@Summary		获取数据库源列表
+//	@Description	获取数据库源列表
+//	@Produce		json
+//	@Param			isNotPaging	query		string									false	"是否需要分页， 默认需要， 如果不分页 传 true"
+//	@Param			pageNum		query		string									false	"页码， 如果不分页 传 0"
+//	@Param			pageSize	query		string									false	"一页大小， 如果不分页 传 0"
+//	@Param			name		query		string									false	"数据源名称"
+//	@Success		200			{object}	res.Full{data=[]model.ReqQueryDbSource}	"code: 200 成功"
+//	@Failure		500			{object}	res.Base								"错误返回内容"
+//	@Router			/api/dbSource [get]
+//	@Security		ApiKeyAuth
 func (control *DbController) List(ctx *gin.Context) {
 	req := new(model.ReqQueryDbSource)
 	err := ctx.BindQuery(req)
@@ -119,19 +121,20 @@ func (control *DbController) List(ctx *gin.Context) {
 }
 
 // Del doc
-// @tags        数据库源管理
-// @Summary     删除数据库源
-// @Description 删除数据库源
-// @Produce     json
-// @Param       id  path     string   true "ID"
-// @Success     200 {object} res.Base true "code: 200 成功"
-// @Failure     500 {object} res.Base true "错误返回内容"
-// @Router      /api/dbSource/{id} [delete]
-// @Security    ApiKeyAuth
+//
+//	@tags			数据库源管理
+//	@Summary		删除数据库源
+//	@Description	删除数据库源
+//	@Produce		json
+//	@Param			id	path		string		true	"ID"
+//	@Success		200	{object}	res.Base	"code: 200 成功"
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/dbSource/{id} [delete]
+//	@Security		ApiKeyAuth
 func (control *DbController) Del(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
-		res.FailByMsg(ctx, "任务ID不能为空")
+		res.FailByMsg(ctx, "数据库源ID不能为空")
 		return
 	}
 
@@ -161,15 +164,16 @@ func (control *DbController) Del(ctx *gin.Context) {
 }
 
 // Modify doc
-// @tags        数据库源管理
-// @Summary     修改数据库源数据
-// @Description 修改数据库源数据
-// @Produce     json
-// @Param       data body     model.ReqModifyDbSource true "修改定时任务数据"
-// @Success     200  {object} res.Base           true "code: 200 成功"
-// @Failure     500  {object} res.Base           true "错误返回内容"
-// @Router      /api/dbSource [put]
-// @Security    ApiKeyAuth
+//
+//	@tags			数据库源管理
+//	@Summary		修改数据库源数据
+//	@Description	修改数据库源数据
+//	@Produce		json
+//	@Param			data	body		model.ReqModifyDbSource	true	"修改定时任务数据"
+//	@Success		200		{object}	res.Base				"code: 200 成功"
+//	@Failure		500		{object}	res.Base				"错误返回内容"
+//	@Router			/api/dbSource [put]
+//	@Security		ApiKeyAuth
 func (control *DbController) Modify(ctx *gin.Context) {
 	req := new(model.ReqModifyDbSource)
 	err := ctx.Bind(req)
@@ -207,15 +211,16 @@ func (control *DbController) Modify(ctx *gin.Context) {
 }
 
 // TestLink doc
-// @tags        数据库源管理
-// @Summary     修改数据库源数据
-// @Description 修改数据库源数据
-// @Produce     json
-// @Param       data body     model.ReqModifyDbSource true "修改定时任务数据"
-// @Success     200  {object} res.Base           true "code: 200 成功"
-// @Failure     500  {object} res.Base           true "错误返回内容"
-// @Router      /api/dbSource/testLink [post]
-// @Security    ApiKeyAuth
+//
+//	@tags			数据库源管理
+//	@Summary		修改数据库源数据
+//	@Description	修改数据库源数据
+//	@Produce		json
+//	@Param			data	body		model.ReqModifyDbSource	true	"修改定时任务数据"
+//	@Success		200		{object}	res.Base				"code: 200 成功"
+//	@Failure		500		{object}	res.Base				"错误返回内容"
+//	@Router			/api/dbSource/testLink [post]
+//	@Security		ApiKeyAuth
 func (control *DbController) TestLink(ctx *gin.Context) {
 	req := new(model.ReqModifyDbSource)
 	err := ctx.Bind(req)
