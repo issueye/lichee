@@ -3,6 +3,7 @@ package common
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/issueye/lichee/app/model"
@@ -52,11 +53,14 @@ const (
 	JOB_MODIFY JOB_TYPE = iota
 	JOB_DEL
 	JOB_ADD
+	JOB_AT_ONCE_RUN
+	JOB_DELAY_ONCE_RUN
 )
 
 type JobChan struct {
 	model.Job
-	Type JOB_TYPE
+	Delay time.Duration // 延迟时间
+	Type  JOB_TYPE
 }
 
 var (

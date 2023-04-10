@@ -64,7 +64,7 @@ func ListenAndServe(addr string, handler http.Handler) error {
 	if addr == "" {
 		addr = ":http"
 	}
-	ln, err := net.Listen("tcp4", addr) // 仅指定 IPv6
+	ln, err := net.Listen("tcp4", addr) // 仅指定 IPv4
 	if err != nil {
 		return err
 	}

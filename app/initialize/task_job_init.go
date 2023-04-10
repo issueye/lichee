@@ -151,7 +151,30 @@ func Monitor() {
 
 						common.Log.Debugf("定时任务【%s-%d】修改成功", tj.Name, tj.Id)
 					}
+				case common.JOB_AT_ONCE_RUN:
+					{
+						tj := TaskJob{
+							Name:   job.Name,
+							Id:     job.Id,
+							Path:   job.Path,
+							AreaId: job.AreaId,
+						}
+						// 马上运行定时任务
+						global.JobTask.Now(tj)
+					}
+				case common.JOB_DELAY_ONCE_RUN:
+					{
+						tj := TaskJob{
+							Name:   job.Name,
+							Id:     job.Id,
+							Path:   job.Path,
+							AreaId: job.AreaId,
+						}
+						// 延迟时间运行一次
+						global.JobTask.In(job.Delay, tj)
+					}
 				}
+
 			}
 		}
 	}

@@ -181,6 +181,38 @@ func (job *JobController) Modify(ctx *gin.Context) {
 	res.SuccessByMsg(ctx, "修改定时任务成功")
 }
 
+// AtOnceRun doc
+//
+//	@tags			定时任务管理
+//	@Summary		马上运行一次任务
+//	@Description	马上运行一次任务
+//	@Produce		json
+//	@Param			id	path		string		true	"任务ID"
+//	@Success		200	{object}	res.Base	"code: 200 成功"
+//	@Failure		500	{object}	res.Base	"错误返回内容"
+//	@Router			/api/job/atOnceRun/{id} [get]
+//	@Security		ApiKeyAuth
+func (job *JobController) AtOnceRun(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if id == "" {
+		res.FailByMsg(ctx, "任务ID不能为空")
+		return
+	}
+
+	// 从数据库查询定时任务信息
+	j, err := service.NewJobService().GetById(cast.ToInt64(id))
+	if err != nil {
+		common.Log.Errorf("获取定时任务失败，失败原因：%s", err.Error())
+		res.FailByMsg(ctx, "获取定时任务失败")
+		return
+	}
+
+	// 运行一次任务
+	common.JobGo(*j, common.JOB_AT_ONCE_RUN)
+
+	res.SuccessByMsg(ctx, "修改定时任务成功")
+}
+
 // ModifyStatus doc
 //
 //	@tags			定时任务管理

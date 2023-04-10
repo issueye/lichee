@@ -600,6 +600,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/job/atOnceRun/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "马上运行一次任务",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "定时任务管理"
+                ],
+                "summary": "马上运行一次任务",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "任务ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code: 200 成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    },
+                    "500": {
+                        "description": "错误返回内容",
+                        "schema": {
+                            "$ref": "#/definitions/res.Base"
+                        }
+                    }
+                }
+            }
+        },
         "/api/job/status/{id}": {
             "put": {
                 "security": [
