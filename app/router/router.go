@@ -16,7 +16,7 @@ func InitRouter(r *gin.Engine) {
 	common.Auth = middleware.NewAuth()
 	apiName := r.Group(name)
 
-	r.GET("ws", v1.WsLogMonitor, common.Auth.MiddlewareFunc())
+	r.GET("socket", v1.WsLogMonitor)
 
 	// 鉴权API
 	apiName.POST("/login", common.Auth.LoginHandler)

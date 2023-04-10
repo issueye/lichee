@@ -1,7 +1,9 @@
 package v1
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -35,6 +37,45 @@ func WsLogMonitor(ctx *gin.Context) {
 }
 
 func Monitor(groupName, id string, fileName string) {
+	// 将文件内容输入到签到
+	file, err := os.Open(fileName)
+	if err != nil {
+		common.Log.Errorf("读取文件失败，失败原因：%s")
+	}
+
+	defer file.Close()
+
+	// 获取文件的描述信息
+	info, err := file.Stat()
+	if err != nil {
+		common.Log.Errorf("获取文件的描述信息失败，失败原因：%s", err.Error())
+	}
+
+	// 创建带缓冲的读取器
+	r := bufio.NewReader(file)
+	size := info.Size()
+	for i := int64(0); i < size; i++ {
+
+		// 如果文件大于一千行
+		if size > 1000 {
+			// 只读取最后一千行日志
+			if i < (size - 1000) {
+				_, _, err = r.ReadLine()
+				if err != nil {
+					break
+				}
+				break
+			}
+		}
+
+		line, _, err := r.ReadLine()
+		if err != nil {
+			break
+		}
+		// 发送到ws 客户端
+		ws.WebsocketManager.Send(id, groupName, line)
+	}
+
 	config := tail.Config{
 		ReOpen:    true,                                 // 重新打开
 		Follow:    true,                                 // 是否跟随

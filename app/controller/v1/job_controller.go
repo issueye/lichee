@@ -210,7 +210,7 @@ func (job *JobController) AtOnceRun(ctx *gin.Context) {
 	// 运行一次任务
 	common.JobGo(*j, common.JOB_AT_ONCE_RUN)
 
-	res.SuccessByMsg(ctx, "修改定时任务成功")
+	res.SuccessByMsg(ctx, "将任务添加到队列中成功，即将运行任务")
 }
 
 // ModifyStatus doc
