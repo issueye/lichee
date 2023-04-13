@@ -40,7 +40,10 @@ func Monitor(groupName, id string, fileName string) {
 	// 将文件内容输入到签到
 	file, err := os.Open(fileName)
 	if err != nil {
-		common.Log.Errorf("读取文件失败，失败原因：%s")
+		msg := fmt.Sprintf("读取文件失败，失败原因：%s", err.Error())
+		common.Log.Error(msg)
+		ws.WebsocketManager.Send(id, groupName, []byte(msg))
+		return
 	}
 
 	defer file.Close()
@@ -48,7 +51,10 @@ func Monitor(groupName, id string, fileName string) {
 	// 获取文件的描述信息
 	info, err := file.Stat()
 	if err != nil {
-		common.Log.Errorf("获取文件的描述信息失败，失败原因：%s", err.Error())
+		msg := fmt.Sprintf("获取文件的描述信息失败，失败原因：%s", err.Error())
+		common.Log.Error(msg)
+		ws.WebsocketManager.Send(id, groupName, []byte(msg))
+		return
 	}
 
 	// 创建带缓冲的读取器
