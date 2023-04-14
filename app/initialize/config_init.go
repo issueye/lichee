@@ -23,7 +23,7 @@ func InitConfig() {
 	sysType := runtime.GOOS
 	var data []byte
 
-	if sysType == "linux" {
+	if sysType == "linux" || sysType == "darwin" {
 		data, err = os.ReadFile(fmt.Sprintf("%s/%s", path, config))
 		if err != nil {
 			panic(fmt.Errorf("获取配置文件信息失败，失败原因：%s", err.Error()))
