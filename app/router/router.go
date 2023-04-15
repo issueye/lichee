@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/arl/statsviz"
 	"github.com/gin-gonic/gin"
 	"github.com/issueye/lichee/app/common"
 	v1 "github.com/issueye/lichee/app/controller/v1"
@@ -17,6 +18,14 @@ func InitRouter(r *gin.Engine) {
 	apiName := r.Group(name)
 
 	r.GET("socket", v1.WsLogMonitor)
+
+	r.GET("/debug/statsviz/*filepath", func(context *gin.Context) {
+		if context.Param("filepath") == "/ws" {
+			statsviz.Ws(context.Writer, context.Request)
+			return
+		}
+		statsviz.IndexAtRoot("/debug/statsviz").ServeHTTP(context.Writer, context.Request)
+	})
 
 	// 鉴权API
 	apiName.POST("/login", common.Auth.LoginHandler)
