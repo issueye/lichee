@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +34,9 @@ func WsLogMonitor(ctx *gin.Context) {
 	id := ws.WebsocketManager.WsClient(ctx, groupName)
 
 	// 判断是否已经打开监听
-	go Monitor(groupName, id, fmt.Sprintf("%s/%s.log", "runtime/logs", name))
+	path := filepath.Join("runtime", "logs", fmt.Sprintf("%s.log", name))
+	fmt.Println("path = ", path)
+	go Monitor(groupName, id, path)
 }
 
 func Monitor(groupName, id string, fileName string) {

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"runtime"
+	"path/filepath"
 
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/config"
@@ -20,21 +20,11 @@ func InitConfig() {
 		panic(fmt.Errorf("获取当前程序路径失败，失败原因：%s", err.Error()))
 	}
 
-	sysType := runtime.GOOS
 	var data []byte
-
-	if sysType == "linux" || sysType == "darwin" {
-		data, err = os.ReadFile(fmt.Sprintf("%s/%s", path, config))
-		if err != nil {
-			panic(fmt.Errorf("获取配置文件信息失败，失败原因：%s", err.Error()))
-		}
-	}
-
-	if sysType == "windows" {
-		data, err = os.ReadFile(fmt.Sprintf("%s\\%s", path, config))
-		if err != nil {
-			panic(fmt.Errorf("获取配置文件信息失败，失败原因：%s", err.Error()))
-		}
+	path = filepath.Join(path, config)
+	data, err = os.ReadFile(path)
+	if err != nil {
+		panic(fmt.Errorf("获取配置文件信息失败，失败原因：%s", err.Error()))
 	}
 
 	common.LocalCfg = new(model.Config)
